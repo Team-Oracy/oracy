@@ -16,9 +16,11 @@ router.get('/featured', mid.redirectToHTTPS, function(req, res, next) {
     axios.get('https://archive.org/metadata/'+value)
       .then(function (response) {
         // handle success
+        // Strips away all HTML tags embedded in description
+        let cleanedUpDescription = response.data.metadata.description.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "")
         let audiobook = {
           title: response.data.metadata.title,
-          description: response.data.metadata.description,
+          description: cleanedUpDescription,
           creator: response.data.metadata.creator,
           coverImageSrc: "https://" + response.data.d1 + response.data.dir + "/" + response.data.files[response.data.files.findIndex(file => file.format === "JPEG")].name
         }
