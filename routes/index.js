@@ -16,8 +16,14 @@ router.get('/featured', mid.redirectToHTTPS, function(req, res, next) {
     axios.get('https://archive.org/metadata/'+value)
       .then(function (response) {
         // handle success
-        console.log(response.data)
-        featuredAudiobooks.push(response.data)
+        let audiobook = {
+          title: response.data.metadata.title,
+          description: response.data.metadata.description,
+          creator: response.data.metadata.creator,
+          coverImageSrc: "https://" + response.data.d1 + response.data.dir + "/" + response.data.files[response.data.files.findIndex(file => file.format === "JPEG")].name
+        }
+        console.log(audiobook)
+        featuredAudiobooks.push(audiobook)
         if (featuredAudiobookIds.length == featuredAudiobooks.length) {
           res.send(featuredAudiobooks)
           next()
