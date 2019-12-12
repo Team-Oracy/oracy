@@ -3,6 +3,7 @@ var router = express.Router()
 var mid = require('../middleware')
 const axios = require('axios');
 const featuredAudiobookIds = require('../data/featuredAudiobookIds.json')
+const apiDataParser = require('../controllers/apiDataParser.js')
 
 // GET /
 router.get('/', mid.redirectToHTTPS, function(req, res, next) {
@@ -22,7 +23,8 @@ router.get('/featured', mid.redirectToHTTPS, function(req, res, next) {
           title: response.data.metadata.title,
           description: cleanedUpDescription,
           creator: response.data.metadata.creator,
-          coverImageSrc: "https://" + response.data.d1 + response.data.dir + "/" + response.data.files[response.data.files.findIndex(file => file.format === "JPEG")].name
+          coverImageSrc: "https://" + response.data.d1 + response.data.dir + "/" + response.data.files[response.data.files.findIndex(file => file.format === "JPEG")].name,
+          audioTracks: apiDataParser.fetchTracks(response.data)
         }
         console.log(audiobook)
         featuredAudiobooks.push(audiobook)
