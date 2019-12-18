@@ -4,9 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "node app.js",
     "dev": "npm-run-all --parallel serve watch:sass",
-    "serve": "nodemon --inspect src/app.js",
+    "serve": "nodemon --inspect app.js",
     "build:sass": "node-sass -r --output-style compressed src/assets/sass/app.sass public/css/app.css -o public/css",
     "watch:sass": "npm run build:sass && npm run build:sass -- -w"
   },

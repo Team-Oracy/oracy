@@ -24,13 +24,13 @@ app.use(cors())
 app.engine('hbs', hbs({
   defaultLayout: 'app', 
   extname: '.hbs',
-  helpers: require('./handlebars-helpers')
+  helpers: require('./src/handlebars-helpers')
 }));
 app.set('view engine', 'hbs')
-app.set('views', __dirname + "/views")
+app.set('views', "./src/views")
 
 // include routes
-var routes = require('./routes/index')
+var routes = require('./src/routes/index')
 app.use('/', routes)
 
 // listen on port 3000
