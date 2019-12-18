@@ -4,18 +4,25 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon --inspect app.js"
+    "start": "node src/app.js",
+    "dev": "npm-run-all --parallel serve watch:sass",
+    "serve": "nodemon --inspect src/app.js",
+    "build:sass": "node-sass -r --output-style compressed src/assets/sass/app.sass public/css/app.css -o public/css",
+    "watch:sass": "npm run build:sass && npm run build:sass -- -w"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
+    "bootstrap": "^4.4.1",
     "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.1"
+    "node-sass": "^4.13.0",
+    "nodemon": "^2.0.1",
+    "npm-run-all": "^4.1.5"
   }
 }

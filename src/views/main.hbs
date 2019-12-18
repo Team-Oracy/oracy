@@ -1,0 +1,96 @@
+<div class="main">
+  <div class="mainHeader">
+    <h1>
+      <img class="mainHeaderLogo -light" src="/img/logo_wordmark.svg" alt="Oracy" />
+      <img class="mainHeaderLogo -dark" src="/img/logo_wordmark_white.svg" alt="Oracy" />
+    </h1>
+    <div>
+      Enjoy <!--over 10K -->public domain audiobooks, completely free and without ads.
+    </div>
+  </div>
+  <div class="mainContent">
+    {{#if featuredAudiobooks.length}}
+      <div class="mainContentIsLoaded">
+        <h2 class="mainContentListTitle">
+          Featured Audiobooks
+        </h2>
+        <div class="list">
+          {{#each featuredAudiobooks}}
+            <div class="listItem" 
+              data-title="{{title}}" 
+              data-description="{{description}}" 
+              data-author="{{author}}" 
+              data-cover-image-src="{{coverImageSrc}}" 
+              data-audio-tracks-length="{{ audioTracks.length }}"
+              {{#each audioTracks}}
+                data-audioTrack-{{offset @index}}="{{this}}"
+              {{/each}}
+            >
+              <div class="listItemImage">
+                <img src="{{ coverImageSrc }}" alt="" />
+                <div class="listItemImageControls">
+                  <div class="listItemImageControlsPlay">
+                    <div class="listItemImageControlsPlay" data-click="listItemPlay" title="Play">
+                      {{> icons/play}}
+                    </div>
+                  </div>
+                  <div class="listItemImageControlsPause" data-click="listItemPause" title="Pause">
+                    {{> icons/pause}}
+                  </div>
+                </div>
+              </div>
+              <div class="listItemContent">
+                <h6 class="listItemTitle">{{ title }}</h6>
+                <div class="listItemAuthor">By {{ author }}</div>
+                <p class="listItemTeaser">{{ description }}...</p>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    {{else}}
+      <div class="mainContentIsError">
+        <div class="mainContentError">
+          Error loading audiobooks.
+          <button type="button" class="btn btn-outline-primary" data-click="retryLoadingAudiobooks">Try again</button>
+        </div>
+      </div>
+    {{/if}}
+  </div>
+  <div class="mainFooter">
+    Built by <a href="https://twitter.com/damirkotoric" target="_blank">@damirkotoric</a>
+  </div>
+</div>
+
+<div class="player" id="player" data-click="openFullView" data-status="paused">
+  <div class="playerMain">
+    <img class="playerCoverImage" id="playerCoverImage" alt="">
+    <div class="playerInfoControls">
+      <div class="playerInfo">
+        <div class="playerTitle" id="playerTitle" ></div>
+        <div class="playerAuthor" id="playerAuthor"></div>
+      </div>
+      <div class="playerControls">
+        <div class="playerControlsRewind" title="Rewind 10 seconds">
+          {{> icons/rewind-10}}
+        </div>
+        <div class="playerControlsPlayPause">
+          <div class="playerControlsPlay" title="Play" data-click="playerPlay">
+            {{> icons/play}}
+          </div>
+          <div class="playerControlsPause" title="Pause" data-click="playerPause">
+            {{> icons/pause}}
+          </div>
+        </div>
+        <div class="playerControlsForward" title="Forward 10 seconds">
+          {{> icons/fast-forward-10}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="playerCollapse">
+    <div title="Collapse" data-click="collapseFullView">
+      {{> icons/chevron-down}}
+    </div>
+  </div>
+</div>

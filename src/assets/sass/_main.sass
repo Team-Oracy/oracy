@@ -1,0 +1,56 @@
+.main
+  display: flex
+  flex-direction: column
+  margin: 0 auto
+  max-width: 620px
+  min-height: 100vh
+  padding: 80px 15px 130px
+  @media (min-width: $breakpoint_2)
+    padding-bottom: 170px
+    padding-left: 0
+    padding-right: 0
+
+.mainHeader
+  +body1
+  font-weight: 600
+  div
+    user-select: text
+
+.mainHeaderLogo
+  height: 50px
+  margin-bottom: 10px
+  &.-light
+    @media (prefers-color-scheme: dark)
+      display: none
+  &.-dark
+    display: none
+    @media (prefers-color-scheme: dark)
+      display: block
+
+.mainContent
+  margin-top: 50px
+  h2
+    margin-bottom: 5px
+    +overline
+
+.mainContentLoader
+  display: flex
+  justify-content: center
+  padding: 100px 0
+
+.mainContentError
+  text-align: center
+  button
+    display: block
+    margin: 20px auto 0
+
+.mainFooter
+  +subtitle
+  margin-top: auto
+  color: $color_grey_500
+  padding: 80px 0 20px
+  text-align: center
+  a
+    color: $color_grey_800
+    @media (prefers-color-scheme: dark)
+      color: $color_grey_400
