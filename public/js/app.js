@@ -88,6 +88,19 @@ jQuery(document).ready(function($) {
     activeSound.howl.pause()
   }
 
+  function playerRewind() {
+    const currentSeek = activeSound.howl.seek()
+    if (currentSeek < 10) {
+      activeSound.howl.seek(0)
+    } else {
+      activeSound.howl.seek((currentSeek) - 10)
+    }
+  }
+
+  function playerForward() {
+    activeSound.howl.seek(activeSound.howl.seek() + 10)
+  }
+
   function collapseFullView(e, $el) {
     $player.removeClass('-full').addClass('-mini')
   }
