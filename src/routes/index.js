@@ -4,7 +4,7 @@ var mid = require('../middleware')
 const Main = require('../controllers/main')
 
 // GET /
-router.get('/', mid.redirectToHTTPS, async(req, res, next) => {
+router.get('/', async(req, res, next) => {
   try {
     const featuredAudiobooks = await Main.getFeaturedAudiobooks()
     res.render('main', { featuredAudiobooks: featuredAudiobooks })
@@ -14,7 +14,7 @@ router.get('/', mid.redirectToHTTPS, async(req, res, next) => {
 })
 
 // POST /@*
-router.get('/featured', mid.redirectToHTTPS, async(req, res, next) => {
+router.get('/featured', async(req, res, next) => {
   try {
     const featuredAudiobooks = await Main.getFeaturedAudiobooks()
     res.send(featuredAudiobooks)
