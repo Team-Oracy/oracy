@@ -3,6 +3,11 @@ var hbs = require('express-handlebars')
 // const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
+const helmet = require('helmet')
+const nocache = require('nocache')
+app.use(nocache())
+
+app.use(helmet())
 
 // parse incoming requests
 // app.use(bodyParser.json())
