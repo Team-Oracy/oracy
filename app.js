@@ -16,6 +16,12 @@ app.use(helmet())
 // serve static files from /public
 app.use(express.static('public'))
 
+if (app.get('env') === 'development') {
+  const livereload = require('livereload')
+  const server = livereload.createServer()
+  server.watch(__dirname + "/public")
+}
+
 // set the port of our application
 // process.env.PORT lets the port be set by Heroku
 // from https://scotch.io/tutorials/how-to-deploy-a-node-js-app-to-heroku

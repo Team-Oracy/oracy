@@ -93,6 +93,7 @@ html
   text-align: center
   width: 100%
   @media (min-width: $breakpoint_2)
+    min-width: 500px
     text-align: left
   .-mini &
     align-items: center
@@ -134,8 +135,65 @@ html
   .-full &
     justify-content: center
     padding-top: 40px
-    @media (min-width: $breakpoint_2)
-      justify-content: flex-start
+
+.playerScrubber
+  display: none
+  margin-top: 20px
+  padding: 16px 0
+  position: relative
+  @media (min-width: $breakpoint_2)
+    margin-top: 50px
+  &:hover, &:active
+    .playerScrubberThumb
+      opacity: 1
+    .playerScrubberBarActive
+      background-color: mix($color_primary_500, black, 80%)
+      @media (prefers-color-scheme: dark)
+        background-color: mix($color_primary_500, white, 80%)
+  &:active
+    .playerScrubberThumb
+      &::after
+        background: $color_grey_600
+        border-radius: 50%
+        content: ''
+        height: 8px
+        left: 3px
+        position: absolute
+        top: 3px
+        width: 8px
+      @media (prefers-color-scheme: dark)
+        &::after
+          background: $color_grey_400
+  .-full &
+    display: block
+
+.playerScrubberThumb
+  background: $color_grey_900
+  border-radius: 50%
+  cursor: pointer
+  height: 14px
+  left: -7px
+  opacity: 0
+  position: absolute
+  top: 11px
+  width: 14px  
+  @media (prefers-color-scheme: dark)
+    background: white
+
+.playerScrubberBar
+  background: $color_grey_200
+  border-radius: 2px
+  height: 4px
+  overflow: hidden
+  @media (prefers-color-scheme: dark)
+    background: $color_grey_700
+
+.playerScrubberBarActive
+  background-color: $color_grey_900
+  height: 100%
+  width: 0
+  @media (prefers-color-scheme: dark)
+    background: $color_grey_200
 
 .playerControlsPlayPause, .playerControlsRewind, .playerControlsForward
   cursor: pointer
@@ -171,7 +229,6 @@ html
       fill: white
       @media (prefers-color-scheme: dark)
         fill: $color_grey_900
-
 
 .playerControlsPlay
   .-playing &
