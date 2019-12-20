@@ -33,8 +33,10 @@ html
     align-items: center
     display: flex
     flex-direction: column
+    justify-content: space-between
     left: 0
     height: 100vh
+    overflow-y: scroll
     padding: 15px 15px 0
     top: 0
     width: 100vw
@@ -47,17 +49,18 @@ html
       padding: 15px
 
 .playerMain
-  height: 100%
   margin: 0 auto
   .-mini &
     align-items: center
     display: flex
+    height: 100%
     justify-content: space-between
     width: 100%
   .-full &
     max-width: 900px
     align-items: center
     display: flex
+    flex: 1
     flex-direction: column
     justify-content: center
     @media (min-width: $breakpoint_2)
