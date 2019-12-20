@@ -20,6 +20,9 @@ jQuery(document).ready(function($) {
     const functionName = $(this).attr('data-click').toString()
     eval(functionName)(e, $(this));
   })
+  navigator.mediaSession.setActionHandler('play', play)
+  navigator.mediaSession.setActionHandler('pause', pause)
+  navigator.mediaSession.setActionHandler('pause', pause)
 
   // Init
 
@@ -90,6 +93,10 @@ jQuery(document).ready(function($) {
   }
 
   function playerRewind() {
+    rewind()
+  }
+
+  function rewind() {
     const currentSeek = activeSound.howl.seek()
     if (currentSeek < 10) {
       activeSound.howl.seek(0)
@@ -99,6 +106,10 @@ jQuery(document).ready(function($) {
   }
 
   function playerForward() {
+    forward()
+  }
+
+  function forward() {
     activeSound.howl.seek(activeSound.howl.seek() + 10)
   }
 
