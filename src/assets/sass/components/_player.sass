@@ -1,3 +1,7 @@
+html
+  &.-playerFullView
+    overflow: hidden
+  
 .player
   background: white
   color: $color_grey_900
@@ -31,7 +35,7 @@
     flex-direction: column
     left: 0
     height: 100vh
-    padding: 15px
+    padding: 15px 15px 0
     top: 0
     width: 100vw
     @media (prefers-color-scheme: dark)
@@ -39,6 +43,8 @@
       color: $color_grey_100
       svg
         fill: white
+    @media (min-width: $breakpoint_2)
+      padding: 15px
 
 .playerMain
   height: 100%
@@ -68,9 +74,13 @@
     height: 60px
     margin-right: 15px
   .-full &
-    height: auto
+    height: 100px
     margin-bottom: 20px
     max-width: 100%
+    @media (min-height: 500px)
+      height: 160px
+    @media (min-height: 600px)
+      height: auto
     @media (min-width: $breakpoint_2)
       margin-bottom: 0
       margin-right: 60px
@@ -194,11 +204,14 @@
 
 .playerCollapse
   cursor: pointer
-  height: 140px
+  height: 100px
   opacity: 0.5
-  padding: 20px 20px 60px
+  padding: 20px
   transition: opacity 0.3s
   width: 100px
+  @media (min-width: $breakpoint_2)
+    height: 140px
+    padding-bottom: 60px
   &:hover
     opacity: 1
   &:active

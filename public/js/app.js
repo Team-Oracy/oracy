@@ -8,6 +8,7 @@ jQuery(document).ready(function($) {
   }
   let playHistory = []
 
+  $html = $(document.documentElement)
   $player = $('#player')
   $playerCoverImage = $('#playerCoverImage')
   $playerTitle = $('#playerTitle')
@@ -101,11 +102,13 @@ jQuery(document).ready(function($) {
     activeSound.howl.seek(activeSound.howl.seek() + 10)
   }
 
-  function collapseFullView(e, $el) {
-    $player.removeClass('-full').addClass('-mini')
+  function expandFullView() {
+    $player.removeClass('-mini').addClass('-full')
+    $html.addClass('-playerFullView')
   }
 
-  function openFullView() {
-    $player.removeClass('-mini').addClass('-full')
+  function collapseFullView(e, $el) {
+    $player.removeClass('-full').addClass('-mini')
+    $html.removeClass('-playerFullView')
   }
 });
