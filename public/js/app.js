@@ -8,14 +8,14 @@ jQuery(document).ready(function($) {
   }
   let playHistory = []
 
-  $html = $(document.documentElement)
-  $player = $('#player')
-  $playerCoverImage = $('#playerCoverImage')
-  $playerTitle = $('#playerTitle')
-  $playerAuthor = $('#playerAuthor')
-  $playerScrubber = $('#playerScrubber')
-  $playerScrubberThumb = $('#playerScrubberThumb')
-  $playerScrubberBarActive = $('#playerScrubberBarActive')
+  const $html = $(document.documentElement)
+  const $player = $('#player')
+  const $playerCoverImage = $('#playerCoverImage')
+  const $playerTitle = $('#playerTitle')
+  const $playerAuthor = $('#playerAuthor')
+  const $playerScrubber = $('#playerScrubber')
+  const $playerScrubberThumb = $('#playerScrubberThumb')
+  const $playerScrubberBarActive = $('#playerScrubberBarActive')
 
   var userIsScrubbing = false
 
