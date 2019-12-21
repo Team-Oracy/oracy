@@ -5,10 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "npm-run-all --parallel serve watch:sass",
+    "dev": "npm-run-all --parallel serve gulp",
     "serve": "nodemon --inspect app.js",
-    "build:sass": "node-sass -r --output-style compressed src/assets/sass/app.sass public/css/app.css -o public/css",
-    "watch:sass": "npm run build:sass && npm run build:sass -- -w"
+    "gulp": "gulp"
   },
   "author": "",
   "license": "ISC",
@@ -22,8 +21,14 @@
     "helmet": "^3.21.2"
   },
   "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect": "^5.7.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-uglify": "^3.0.2",
+    "gulp-uglify-es": "^2.0.0",
+    "gulp-util": "^3.0.8",
     "livereload": "^0.8.2",
-    "node-sass": "^4.13.0",
     "nodemon": "^2.0.1",
     "npm-run-all": "^4.1.5"
   }
