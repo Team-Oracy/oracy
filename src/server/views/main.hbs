@@ -23,18 +23,16 @@
               data-cover-image-src="{{coverImageSrc}}" 
               data-audio-tracks-length="{{ audioTracks.length }}"
               {{#each audioTracks}}
-                data-audioTrack-{{offset @index}}="{{this}}"
+                data-audio-track-{{offset @index}}="{{this}}"
               {{/each}}
             >
               <div class="listItemImage">
                 <img src="{{ coverImageSrc }}" alt="" />
                 <div class="listItemImageControls">
-                  <div class="listItemImageControlsPlay">
-                    <div class="listItemImageControlsPlay" data-click="listItemPlay" title="Play">
-                      {{> icons/play}}
-                    </div>
+                  <div class="listItemImageControlsPlay" title="Play">
+                    {{> icons/play}}
                   </div>
-                  <div class="listItemImageControlsPause" data-click="listItemPause" title="Pause">
+                  <div class="listItemImageControlsPause" title="Pause">
                     {{> icons/pause}}
                   </div>
                 </div>
@@ -52,7 +50,7 @@
       <div class="mainContentIsError">
         <div class="mainContentError">
           Error loading audiobooks.
-          <button type="button" class="btn btn-outline-primary" data-click="retryLoadingAudiobooks">Try again</button>
+          <button id="retryLoadingAudiobooks" type="button" class="btn btn-outline-primary">Try again</button>
         </div>
       </div>
     {{/if}}
@@ -62,7 +60,7 @@
   </div>
 </div>
 
-<div class="player" id="player" data-click="expandFullView" data-status="paused">
+<div class="player" id="player" data-status="paused">
   <div class="playerMain">
     <img class="playerCoverImage" id="playerCoverImage" alt="">
     <div class="playerInfoControls">
@@ -70,31 +68,31 @@
         <div class="playerTitle" id="playerTitle" ></div>
         <div class="playerAuthor" id="playerAuthor"></div>
       </div>
-      <div class="playerScrubber" id="playerScrubber" data-mousedown="playerScrub" data-position="0">
+      <div class="playerScrubber" id="playerScrubber" data-position="0">
         <div class="playerScrubberThumb" id="playerScrubberThumb"></div>
         <div class="playerScrubberBar">
           <div class="playerScrubberBarActive" id="playerScrubberBarActive"></div>
         </div>
       </div>
       <div class="playerControls">
-        <div class="playerControlsRewind" title="Rewind 10 seconds" data-click="playerRewind">
+        <div class="playerControlsRewind" id="playerControlsRewind" title="Rewind 10 seconds">
           {{> icons/rewind-10}}
         </div>
         <div class="playerControlsPlayPause">
-          <div class="playerControlsPlay" title="Play" data-click="playerPlay">
+          <div class="playerControlsPlay" id="playerControlsPlay" title="Play" data-click="playerPlay">
             {{> icons/play}}
           </div>
-          <div class="playerControlsPause" title="Pause" data-click="playerPause">
+          <div class="playerControlsPause" id="playerControlsPause" title="Pause" data-click="playerPause">
             {{> icons/pause}}
           </div>
         </div>
-        <div class="playerControlsForward" title="Forward 10 seconds" data-click="playerForward">
+        <div class="playerControlsForward" id="playerControlsForward" title="Forward 10 seconds">
           {{> icons/fast-forward-10}}
         </div>
       </div>
     </div>
   </div>
-  <div class="playerCollapse" data-click="collapseFullView" title="Collapse">
+  <div class="playerCollapse" id="playerCollapse" title="Collapse">
     <div>
       {{> icons/chevron-down}}
     </div>

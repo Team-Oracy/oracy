@@ -13,7 +13,7 @@ const jsSources = ['src/client/js/*.js'],
 function js() {
   return gulp
     .src(jsSources)
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(concat('app.js'))
     .pipe(gulp.dest(outputDir + '/js'))
 }
