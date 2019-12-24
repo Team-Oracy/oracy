@@ -24,6 +24,7 @@ jQuery(document).ready(function($) {
   $playerControlsForward.on('click', forward)
   $playerControlsPlay.on('click', play)
   $playerControlsPause.on('click', pause)
+  // TODO: _vendor_jquery.touchSwipe.js conflicts with mousedown listener
   $playerScrubber.on('mousedown', playerScrub)
   if (navigator.mediaSession) {
     // Media key listeners.
@@ -39,7 +40,8 @@ jQuery(document).ready(function($) {
       if ($player.hasClass('-full') && direction == 'down') {
         collapseFullView()
       }
-    }
+    },
+    preventDefaultEvents: false
   })
   
   // Functions
