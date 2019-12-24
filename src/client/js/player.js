@@ -25,11 +25,22 @@ jQuery(document).ready(function($) {
   $playerControlsPlay.on('click', play)
   $playerControlsPause.on('click', pause)
   $playerScrubber.on('mousedown', playerScrub)
-  navigator.mediaSession.setActionHandler('play', play)
-  navigator.mediaSession.setActionHandler('pause', pause)
-  navigator.mediaSession.setActionHandler('pause', pause)
+  if (navigator.mediaSession) {
+    // Media key listeners.
+    navigator.mediaSession.setActionHandler('play', play)
+    navigator.mediaSession.setActionHandler('pause', pause)
+    navigator.mediaSession.setActionHandler('pause', pause)
+  }
 
   // Init
+  $player.swipe({
+    // jQuery plugin that handles mobile swipe gestures
+    swipe:function(e, direction, distance, duration, fingerCount, fingerData) {
+      if ($player.hasClass('-full') && direction == 'down') {
+        collapseFullView()
+      }
+    }
+  })
   
   // Functions
   function play(e, $clickedListItem) {
@@ -98,7 +109,9 @@ jQuery(document).ready(function($) {
   }
 
   function collapseFullView(e) {
-    e.stopPropagation()
+    if (typeof e !== 'undefined') {
+      e.stopPropagation()
+    }
     $player.removeClass('-full').addClass('-mini')
     $html.removeClass('-playerFullView')
   }

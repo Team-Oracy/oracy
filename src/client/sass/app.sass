@@ -9,6 +9,9 @@
 html
   +body1
   user-select: none
+  &.touch-events *
+    user-select: none !important
+    -webkit-user-select: none !important
 
 body
   @media (prefers-color-scheme: dark)
