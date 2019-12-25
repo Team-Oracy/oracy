@@ -10344,6 +10344,18 @@ html.backdropfilter .player.-mini {
   height: 50px;
 }
 
+.player.-full .playerControlsLoading .loadingCircle {
+  height: 40px;
+  stroke: white;
+  width: 40px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .player.-full .playerControlsLoading .loadingCircle {
+    stroke: black;
+  }
+}
+
 .player.-loading .playerControlsLoading {
   display: block;
 }

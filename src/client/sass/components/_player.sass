@@ -236,6 +236,13 @@ html
 .playerControlsLoading
   display: none
   height: 50px
+  .player.-full &
+    .loadingCircle
+      height: 40px
+      stroke: white
+      width: 40px
+      @media (prefers-color-scheme: dark)
+        stroke: black
   .player.-loading &
     display: block
 
