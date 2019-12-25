@@ -70,8 +70,8 @@ jQuery(document).ready(function($) {
       $playerTitle.text(activeSound.$listItem.attr('data-title'))
       $playerAuthor.text(activeSound.$listItem.attr('data-author'))
       $playerCoverImage.attr('src', activeSound.$listItem.attr('data-cover-image-src'))
-      activeSound.$listItem.addClass('-loading')
-      $player.addClass('-loading')
+      activeSound.$listItem.removeClass('-playing').addClass('-loading')
+      $player.removeClass('-playing').addClass('-loading')
     } else {
       // Resuming existing audiobook.
       activeSound.$listItem.addClass('-playing')
