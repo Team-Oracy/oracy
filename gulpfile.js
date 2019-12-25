@@ -6,7 +6,7 @@ const gulp = require('gulp'),
     concat = require('gulp-concat')
 
 const jsSources = ['src/client/js/*.js'],
-    sassSources = ['src/client/sass/*.sass'],
+    sassSources = ['src/client/sass/**/*.sass'],
     outputDir = 'public'
 
 // Transpile, concatenate and minify scripts

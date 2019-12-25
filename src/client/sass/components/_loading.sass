@@ -1,0 +1,30 @@
+.loading
+  animation: rotation 1.35s linear infinite
+  display: flex
+  height: 100%
+  width: 100%
+
+.loadingCircle
+  stroke-dasharray: 180
+  stroke-dashoffset: 0
+  stroke: black
+  transform-origin: center
+  animation: turn 1.35s ease-in-out infinite
+
+@keyframes rotation
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(270deg)
+
+@keyframes turn
+  0%
+    stroke-dashoffset: 180
+  50%
+    stroke-dashoffset: 45
+    -webkit-transform: rotate(135deg)
+    transform: rotate(135deg)
+  100%
+    stroke-dashoffset: 180
+    -webkit-transform: rotate(450deg)
+    transform: rotate(450deg)

@@ -9800,7 +9800,7 @@ a.text-dark:hover, a.text-dark:focus {
   }
 }
 
-.listItemImageControlsPlay, .listItemImageControlsPause {
+.listItemImageControlsLoading, .listItemImageControlsPlay, .listItemImageControlsPause {
   align-items: center;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
@@ -9815,28 +9815,47 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 @media (prefers-color-scheme: dark) {
-  .listItemImageControlsPlay, .listItemImageControlsPause {
+  .listItemImageControlsLoading, .listItemImageControlsPlay, .listItemImageControlsPause {
     background: rgba(220, 220, 220, 0.5);
   }
 }
 
-.listItemImageControlsPlay:hover, .listItemImageControlsPause:hover {
+.listItemImageControlsLoading:hover, .listItemImageControlsPlay:hover, .listItemImageControlsPause:hover {
   opacity: 1;
 }
 
-.listItemImageControlsPlay > svg, .listItemImageControlsPause > svg {
+.listItemImageControlsLoading > svg, .listItemImageControlsPlay > svg, .listItemImageControlsPause > svg {
   fill: white;
   height: 50px;
   width: 50px;
 }
 
 @media (prefers-color-scheme: dark) {
-  .listItemImageControlsPlay > svg, .listItemImageControlsPause > svg {
+  .listItemImageControlsLoading > svg, .listItemImageControlsPlay > svg, .listItemImageControlsPause > svg {
     fill: black;
   }
 }
 
-.-playing .listItemImageControlsPlay {
+.listItemImageControlsLoading {
+  display: none;
+}
+
+.listItemImageControlsLoading .loadingCircle {
+  stroke: white;
+}
+
+@media (prefers-color-scheme: dark) {
+  .listItemImageControlsLoading .loadingCircle {
+    stroke: black;
+  }
+}
+
+.-loading .listItemImageControlsLoading {
+  display: flex;
+  opacity: 1;
+}
+
+.-playing .listItemImageControlsPlay, .-loading .listItemImageControlsPlay {
   display: none;
 }
 
@@ -9846,6 +9865,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .-playing .listItemImageControlsPause {
   display: flex;
+  opacity: 1;
 }
 
 .listItemContent {
@@ -9875,6 +9895,46 @@ a.text-dark:hover, a.text-dark:focus {
   font-size: 15px;
   font-weight: 400;
   margin-bottom: 0;
+}
+
+.loading {
+  animation: rotation 1.35s linear infinite;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.loadingCircle {
+  stroke-dasharray: 180;
+  stroke-dashoffset: 0;
+  stroke: black;
+  transform-origin: center;
+  animation: turn 1.35s ease-in-out infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(270deg);
+  }
+}
+
+@keyframes turn {
+  0% {
+    stroke-dashoffset: 180;
+  }
+  50% {
+    stroke-dashoffset: 45;
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 180;
+    -webkit-transform: rotate(450deg);
+    transform: rotate(450deg);
+  }
 }
 
 html.-playerFullView {
@@ -9964,6 +10024,7 @@ html.backdropfilter .player.-mini {
 }
 
 .-full .playerMain {
+  margin: 20px 0;
   max-width: 900px;
   align-items: center;
   display: flex;
@@ -10228,18 +10289,18 @@ html.backdropfilter .player.-mini {
   transform: scale(0.97);
 }
 
-.playerControlsPlay, .playerControlsPause {
+.playerControlsLoading, .playerControlsPlay, .playerControlsPause {
   height: 70px;
   padding: 10px;
 }
 
 @media (min-width: 400px) {
-  .playerControlsPlay, .playerControlsPause {
+  .playerControlsLoading, .playerControlsPlay, .playerControlsPause {
     padding: 10px;
   }
 }
 
-.-full .playerControlsPlay, .-full .playerControlsPause {
+.-full .playerControlsLoading, .-full .playerControlsPlay, .-full .playerControlsPause {
   background: black;
   border-radius: 50%;
   height: 90px;
@@ -10248,37 +10309,46 @@ html.backdropfilter .player.-mini {
 }
 
 @media (prefers-color-scheme: dark) {
-  .-full .playerControlsPlay, .-full .playerControlsPause {
+  .-full .playerControlsLoading, .-full .playerControlsPlay, .-full .playerControlsPause {
     background: #DCDCDC;
   }
 }
 
-.playerControlsPlay svg, .playerControlsPause svg {
+.playerControlsLoading svg, .playerControlsPlay svg, .playerControlsPause svg {
   height: 100%;
   width: 70px;
 }
 
 @media (prefers-color-scheme: dark) {
-  .playerControlsPlay svg, .playerControlsPause svg {
+  .playerControlsLoading svg, .playerControlsPlay svg, .playerControlsPause svg {
     fill: #1A1A1A;
   }
 }
 
-.-mini .playerControlsPlay svg, .-mini .playerControlsPause svg {
+.-mini .playerControlsLoading svg, .-mini .playerControlsPlay svg, .-mini .playerControlsPause svg {
   fill: black;
 }
 
-.-full .playerControlsPlay svg, .-full .playerControlsPause svg {
+.-full .playerControlsLoading svg, .-full .playerControlsPlay svg, .-full .playerControlsPause svg {
   fill: white;
 }
 
 @media (prefers-color-scheme: dark) {
-  .-full .playerControlsPlay svg, .-full .playerControlsPause svg {
+  .-full .playerControlsLoading svg, .-full .playerControlsPlay svg, .-full .playerControlsPause svg {
     fill: #1A1A1A;
   }
 }
 
-.-playing .playerControlsPlay {
+.playerControlsLoading {
+  display: none;
+  height: 50px;
+}
+
+.player.-loading .playerControlsLoading {
+  display: block;
+}
+
+.player.-loading .playerControlsPlay, .player.-playing .playerControlsPlay {
   display: none;
 }
 
@@ -10286,7 +10356,7 @@ html.backdropfilter .player.-mini {
   display: none;
 }
 
-.-playing .playerControlsPause {
+.player.-playing .playerControlsPause {
   display: block;
 }
 
@@ -10361,11 +10431,6 @@ html {
   font-size: 18px;
   font-weight: 400;
   user-select: none;
-}
-
-html.touch-events * {
-  user-select: none !important;
-  -webkit-user-select: none !important;
 }
 
 @media (prefers-color-scheme: dark) {

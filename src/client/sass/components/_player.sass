@@ -59,6 +59,7 @@ html
     justify-content: space-between
     width: 100%
   .-full &
+    margin: 20px 0
     max-width: 900px
     align-items: center
     display: flex
@@ -207,7 +208,7 @@ html
     svg
       transform: scale(0.97)
 
-.playerControlsPlay, .playerControlsPause
+.playerControlsLoading, .playerControlsPlay, .playerControlsPause
   height: 70px
   padding: 10px
   @media (min-width: $breakpoint_1)
@@ -232,13 +233,19 @@ html
       @media (prefers-color-scheme: dark)
         fill: $color_grey_900
 
+.playerControlsLoading
+  display: none
+  height: 50px
+  .player.-loading &
+    display: block
+
 .playerControlsPlay
-  .-playing &
+  .player.-loading &, .player.-playing &
     display: none
 
 .playerControlsPause
   display: none
-  .-playing &
+  .player.-playing &
     display: block
   .-full &
     svg

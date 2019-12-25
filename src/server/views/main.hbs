@@ -29,6 +29,9 @@
               <div class="listItemImage">
                 <img src="{{ coverImageSrc }}" alt="" />
                 <div class="listItemImageControls">
+                  <div class="listItemImageControlsLoading" title="Loading">
+                    {{> icons/loading}}
+                  </div>
                   <div class="listItemImageControlsPlay" title="Play">
                     {{> icons/play}}
                   </div>
@@ -79,10 +82,13 @@
           {{> icons/rewind-10}}
         </div>
         <div class="playerControlsPlayPause">
-          <div class="playerControlsPlay" id="playerControlsPlay" title="Play" data-click="playerPlay">
+          <div class="playerControlsLoading" title="Loading">
+            {{> icons/loading}}
+          </div>
+          <div class="playerControlsPlay" id="playerControlsPlay" title="Play">
             {{> icons/play}}
           </div>
-          <div class="playerControlsPause" id="playerControlsPause" title="Pause" data-click="playerPause">
+          <div class="playerControlsPause" id="playerControlsPause" title="Pause">
             {{> icons/pause}}
           </div>
         </div>

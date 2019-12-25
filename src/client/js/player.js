@@ -59,21 +59,25 @@ jQuery(document).ready(function($) {
         howl: new Howl({
           html5: true,
           src: [$clickedListItem.attr('data-audio-track-1')],
-          onend: endPlayback
+          onload: onLoad,
+          onend: onEnd
         }),
         src: $clickedListItem.attr('data-audio-track-1'),
         $listItem: $clickedListItem
       }
       $player.addClass('-mini')
-      // Update player UI.
+      // Update UI.
       $playerTitle.text(activeSound.$listItem.attr('data-title'))
       $playerAuthor.text(activeSound.$listItem.attr('data-author'))
       $playerCoverImage.attr('src', activeSound.$listItem.attr('data-cover-image-src'))
+      activeSound.$listItem.addClass('-loading')
+      $player.addClass('-loading')
+    } else {
+      // Resuming existing audiobook.
+      activeSound.$listItem.addClass('-playing')
+      $player.addClass('-playing')
     }
-    // Update listItem UI.
-    activeSound.$listItem.addClass('-playing')
     // Play sound.
-    $player.addClass('-playing')
     activeSound.howl.play()
   }
 
@@ -155,7 +159,12 @@ jQuery(document).ready(function($) {
     return scrubPercentage
   }
 
-  function endPlayback(e) {
+  function  onLoad(e) {
+    $player.removeClass('-loading').addClass('-playing')
+    activeSound.$listItem.removeClass('-loading').addClass('-playing')
+  }
+
+  function onEnd(e) {
     pause()
   }
 

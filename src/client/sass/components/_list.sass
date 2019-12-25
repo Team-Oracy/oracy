@@ -42,7 +42,7 @@
 
 .listItemImageControls
 
-.listItemImageControlsPlay, .listItemImageControlsPause
+.listItemImageControlsLoading, .listItemImageControlsPlay, .listItemImageControlsPause
   align-items: center
   background: rgba(black, 0.5)
   display: flex
@@ -65,14 +65,25 @@
     @media (prefers-color-scheme: dark)
       fill: black
 
+.listItemImageControlsLoading
+  display: none
+  .loadingCircle
+    stroke: white
+    @media (prefers-color-scheme: dark)
+      stroke: black
+  .-loading &
+    display: flex
+    opacity: 1
+
 .listItemImageControlsPlay
-  .-playing &
+  .-playing &, .-loading &
     display: none
 
 .listItemImageControlsPause
   display: none
   .-playing &
     display: flex
+    opacity: 1
 
 .listItemContent
   user-select: text
