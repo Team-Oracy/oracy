@@ -141,7 +141,7 @@ jQuery(document).ready(function($) {
       if(activeSound.howl) {
         // Stop current audiobook.
         activeSound.howl.unload()
-        activeSound.$listItem.removeClass('-playing')
+        activeSound.$listItem.removeClass('-playing -loading')
       }
       // Set new sound.
       activeSound = {
@@ -159,7 +159,7 @@ jQuery(document).ready(function($) {
       $playerTitle.text(activeSound.$listItem.attr('data-title'))
       $playerAuthor.text(activeSound.$listItem.attr('data-author'))
       $playerCoverImage.attr('src', activeSound.$listItem.attr('data-cover-image-src'))
-      activeSound.$listItem.removeClass('-playing').addClass('-loading')
+      activeSound.$listItem.addClass('-loading')
       $player.removeClass('-playing').addClass('-loading')
     } else {
       // Resuming existing audiobook.
