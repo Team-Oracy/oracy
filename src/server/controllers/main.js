@@ -9,7 +9,7 @@ async function fetchAudiobooks() {
     // Cached file exists, use that.
     let cachedFile
     try {
-      cachedFile = fs.readFileSync(__dirname + '/../data/_cachedFeaturedAudiobooks.json', 'utf8')
+      cachedFile = fs.readFileSync(cachedFilePath, 'utf8')
     } catch (err) {
       console.log(err)
     }
@@ -22,7 +22,9 @@ async function fetchAudiobooks() {
       const promises = featuredAudiobookIds.map(async featuredAudiobookId => {
         const response = await axios('https://archive.org/metadata/'+featuredAudiobookId)
         const cleanedUpDescription = response.data.metadata.description.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "")
+        
         const audiobook = {
+          id: featuredAudiobookId,
           title: response.data.metadata.title,
           description: cleanedUpDescription.substr(0, 256),
           author: response.data.metadata.creator,

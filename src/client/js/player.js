@@ -47,7 +47,15 @@ jQuery(document).ready(function($) {
   // Functions
   function play(e, $clickedListItem) {
     e.stopPropagation()
-    if ($clickedListItem && activeSound.src != $clickedListItem.attr('data-audio-track-1')) {
+    
+    const itemData = $clickedListItem.data();
+    if (activeSound.$listItem === undefined || itemData['id'] !== activeSound.$listItem.data('id')) {
+      const numberOfTracks = itemData['audioTracksLength']
+      const tracks = []
+      for (let i = 0; i < numberOfTracks; i++) {
+        const trackUrl = $clickedListItem.data('audioTrack-' + (i + 1))
+        tracks.push(trackUrl)
+      }
       // New audiobook.
       if(activeSound.howl) {
         // Stop current audiobook.
@@ -58,11 +66,12 @@ jQuery(document).ready(function($) {
       activeSound = {
         howl: new Howl({
           html5: true,
-          src: [$clickedListItem.attr('data-audio-track-1')],
+          src: tracks[0],
           onload: onLoad,
           onend: onEnd
         }),
-        src: $clickedListItem.attr('data-audio-track-1'),
+        currentIndex: 0,
+        tracks: tracks,
         $listItem: $clickedListItem
       }
       $player.addClass('-mini')
@@ -159,12 +168,27 @@ jQuery(document).ready(function($) {
     return scrubPercentage
   }
 
+  function playNextTrack() {
+    activeSound.howl = new Howl({
+      html5: true,
+      src: activeSound.tracks[++activeSound.currentIndex],
+      onload: onLoad,
+      onend: onEnd
+    });
+    activeSound.howl.play()
+  }
+
   function  onLoad(e) {
     $player.removeClass('-loading').addClass('-playing')
     activeSound.$listItem.removeClass('-loading').addClass('-playing')
   }
 
   function onEnd(e) {
+    if((activeSound.currentIndex + 1) < activeSound.tracks.length) {
+      playNextTrack()
+      return
+    }
+
     pause()
   }
 
