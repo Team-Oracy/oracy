@@ -16,6 +16,7 @@ const AudiobookListItem = ({ book }) => {
     AudioPlayer.otherBookSelected(book.id, () => {
       setIsPlaying(false);
       setIsPaused(false);
+      setIsLoading(false);
     });
   }, []);
   return (
