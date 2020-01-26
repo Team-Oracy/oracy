@@ -6,6 +6,7 @@ import ErrorState from "../components/errorState";
 import Layout from "../components/layout";
 import Player from "../components/player";
 import AudioPlayer from "../utils/audioPlayer";
+import Loading from "../public/icons/loading.svg"
 
 const featuredAudiobookIds = [
   "art_of_war_librivox",
@@ -95,7 +96,7 @@ const Home = () => {
 
   return (
     <Layout>
-      {!loaded && <h3>Fetching your books from the library...</h3>}
+      {!loaded && <Loading className="listLoading" />}
       {loaded && featuredAudiobooks.length && (
         <>
           <FeaturedAudiobooks
