@@ -1,7 +1,9 @@
 import { Howl } from "howler";
 
 let howler;
-let subscribers = [];
+let subscribersStopped = [];
+let subscribersStarted = [];
+let subscribersPaused = [];
 let audioTracks = [];
 let somethingIsPlayingCb = () => {};
 let somethingPausedCb = () => {};
@@ -12,7 +14,9 @@ class AudioPlayer {
     if (howler) {
       howler.stop();
       howler.unload();
-      subscribers.filter(s => s.id !== book.id).forEach(s => s.callback());
+      subscribersStopped
+        .filter(s => s.id !== book.id)
+        .forEach(s => s.callback());
     }
 
     this._createHowlerObject(book, events, 0);
@@ -22,8 +26,16 @@ class AudioPlayer {
     howler = new Howl({
       html5: true,
       src: audioTracks[trackIndex],
-      onplay: () => somethingIsPlayingCb(book),
-      onpause: () => somethingPausedCb(book),
+      onplay: () => {
+        subscribersStarted
+          .filter(s => s.id === book.id)
+          .forEach(s => s.callback());
+      },
+      onpause: () => {
+        subscribersPaused
+          .filter(s => s.id === book.id)
+          .forEach(s => s.callback());
+      },
       onload: () => {
         if (events.onLoad) events.onLoad();
         const nextTrack = audioTracks[trackIndex + 1];
@@ -56,16 +68,16 @@ class AudioPlayer {
     else howler.seek(skipTo);
   }
 
-  otherBookSelected(id, cb) {
-    subscribers.push({ id, callback: cb });
+  onBookStopped(id, cb) {
+    subscribersStopped.push({ id, callback: cb });
   }
 
-  audioStarted(cb) {
-    somethingIsPlayingCb = cb;
+  onAudioStarted(id, cb) {
+    subscribersStarted.push({ id, callback: cb });
   }
 
-  audioPaused(cb) {
-    somethingPausedCb = cb;
+  onAudioPaused(id, cb) {
+    subscribersPaused.push({ id, callback: cb });
   }
 
   onScrubbing() {}
