@@ -6,7 +6,7 @@ import ErrorState from "../components/errorState";
 import Layout from "../components/layout";
 import Player from "../components/player";
 import AudioPlayer from "../utils/audioPlayer";
-import Loading from "../public/icons/loading.svg"
+import Loading from "../public/icons/loading.svg";
 
 const featuredAudiobookIds = [
   "art_of_war_librivox",
@@ -50,6 +50,8 @@ function fetchTracks(audiobook) {
 
 const Home = () => {
   const [featuredAudiobooks, setFeaturedAudiobooks] = useState([]);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [book, setBook] = useState(null);
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     async function fetchBooks() {
@@ -101,11 +103,12 @@ const Home = () => {
         <>
           <FeaturedAudiobooks
             featuredAudiobooks={featuredAudiobooks}
-            onSelect={selectedBook => {
-              console.log("selectedBook", selectedBook);
+            onPlayStateChange={(selectedBook, isPlaying) => {
+              setIsAudioPlaying(isPlaying);
+              setBook(selectedBook);
             }}
           />
-          <Player />
+          <Player book={book} isPlaying={isAudioPlaying} />
         </>
       )}
       {loaded && !featuredAudiobooks.length && <ErrorState />}

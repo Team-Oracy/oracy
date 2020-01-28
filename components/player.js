@@ -7,10 +7,10 @@ import ChevronDownIcon from "../public/icons/chevron-down.svg";
 import { useEffect, useState, useRef } from "react";
 import AudioPlayer from "../utils/audioPlayer";
 
-const Player = () => {
-  const [book, setBook] = useState();
+const Player = ({ book, isPlaying = false }) => {
+  const [bookState, setBookState] = useState();
   const [isFullPlayer, setIsFullPlayer] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlayingState, setIsPlayingState] = useState(false);
   const [isUserScrubbing, setIsUserScrubbing] = useState(false);
   const [theInterval, setTheInterval] = useState(null);
   const playerScrubberBarActiveRef = useRef();
@@ -59,6 +59,7 @@ const Player = () => {
     const scrubPercentage = xPos / playerScrubberWidth;
     return scrubPercentage;
   }
+
   useEffect(() => {
     let xDown, yDown;
 
@@ -98,23 +99,24 @@ const Player = () => {
   }, [isFullPlayer]);
 
   useEffect(() => {
-    AudioPlayer.audioStarted(book => {
-      setBook(book);
-      setIsPlaying(true);
-    });
-
-    AudioPlayer.audioPaused(() => {
-      setIsPlaying(false);
-      clearInterval(theInterval);
-    });
-  }, []);
+    // AudioPlayer.audioStarted(book => {
+    //   setBook(book);
+    //   setIsPlaying(true);
+    // });
+    // AudioPlayer.audioPaused(() => {
+    //   setIsPlaying(false);
+    //   clearInterval(theInterval);
+    // });
+    setBookState(book);
+    setIsPlayingState(isPlaying);
+  }, [book, isPlaying]);
 
   useEffect(() => {
     function createScrubAnimation() {
       setTheInterval(
         setInterval(() => {
           requestAnimationFrame(() => {
-            if (!isUserScrubbing) {
+            if (!isUserScrubbing && playerScrubberRef.current) {
               const elapsed = AudioPlayer.getCurrentPosition();
               const percentage = elapsed / AudioPlayer.getDuration();
               const playerScrubberWidth = playerScrubberRef.current.clientWidth;
@@ -134,12 +136,17 @@ const Player = () => {
       clearInterval(theInterval);
       setTheInterval(null);
     }
-  }, [isUserScrubbing, isPlaying]);
+
+    return () => {
+      clearInterval(theInterval);
+      setTheInterval(null);
+    };
+  }, [isUserScrubbing, isPlayingState]);
 
   const playerClassnames = `player ${isFullPlayer ? "-full" : "-mini"} ${
-    isPlaying ? "-playing" : ""
+    isPlayingState ? "-playing" : ""
   }`;
-  return book ? (
+  return bookState ? (
     <div className={playerClassnames} id="player">
       <div
         className="playerMain"
@@ -149,15 +156,15 @@ const Player = () => {
           className="playerCoverImage"
           id="playerCoverImage"
           alt=""
-          src={book.coverImageSrc}
+          src={bookState.coverImageSrc}
         />
         <div className="playerInfoControls">
           <div className="playerInfo">
             <div className="playerTitle" id="playerTitle">
-              {book.title}
+              {bookState.title}
             </div>
             <div className="playerAuthor" id="playerAuthor">
-              {book.author}
+              {bookState.author}
             </div>
           </div>
           <div
@@ -244,7 +251,9 @@ const Player = () => {
         </div>
       </div>
     </div>
-  ) : null;
+  ) : (
+    <h1>hello</h1>
+  );
 };
 
 export default Player;

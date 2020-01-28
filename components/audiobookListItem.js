@@ -4,7 +4,7 @@ import PauseIcon from "../public/icons/pause.svg";
 import AudioPlayer from "../utils/audioPlayer";
 import { useState, useEffect } from "react";
 
-const AudiobookListItem = ({ book }) => {
+const AudiobookListItem = ({ book, onPlayStateChange = () => {} }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -13,10 +13,21 @@ const AudiobookListItem = ({ book }) => {
     isPlaying ? "-playing" : ""
   }`;
   useEffect(() => {
-    AudioPlayer.otherBookSelected(book.id, () => {
+    AudioPlayer.onBookStopped(book.id, () => {
       setIsPlaying(false);
       setIsPaused(false);
       setIsLoading(false);
+      onPlayStateChange(book, false);
+    });
+
+    AudioPlayer.onAudioStarted(book.id, () => {
+      onPlayStateChange(book, true);
+      setIsPlaying(true);
+    });
+
+    AudioPlayer.onAudioPaused(book.id, () => {
+      onPlayStateChange(book, false);
+      setIsPlaying(false);
     });
   }, []);
   return (
