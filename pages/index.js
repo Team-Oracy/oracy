@@ -52,7 +52,8 @@ const Home = () => {
   const [featuredAudiobooks, setFeaturedAudiobooks] = useState([]);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [book, setBook] = useState(null);
-  const [loaded, setLoaded] = useState(false);
+  const [areBooksLoaded, SetAreBooksLoaded] = useState(false);
+  const [isAudioLoading, SetIsAudioLoading] = useState(false);
   useEffect(() => {
     async function fetchBooks() {
       let featuredAudiobooks = [];
@@ -90,7 +91,7 @@ const Home = () => {
         localStorage.setItem("books", JSON.stringify(featuredAudiobooks));
       }
       setFeaturedAudiobooks(featuredAudiobooks);
-      setLoaded(true);
+      SetAreBooksLoaded(true);
     }
 
     fetchBooks();
@@ -98,20 +99,27 @@ const Home = () => {
 
   return (
     <Layout>
-      {!loaded && <Loading className="listLoading" />}
-      {loaded && featuredAudiobooks.length && (
+      {!areBooksLoaded && <Loading className="listLoading" />}
+      {areBooksLoaded && featuredAudiobooks.length && (
         <>
           <FeaturedAudiobooks
             featuredAudiobooks={featuredAudiobooks}
-            onPlayStateChange={(selectedBook, isPlaying) => {
+            onPlayStateChange={(_, isPlaying) => {
               setIsAudioPlaying(isPlaying);
+            }}
+            onLoadingStateChange={(selectedBook, isLoading) => {
               setBook(selectedBook);
+              SetIsAudioLoading(isLoading);
             }}
           />
-          <Player book={book} isPlaying={isAudioPlaying} />
+          <Player
+            book={book}
+            isPlaying={isAudioPlaying}
+            isAudioLoading={isAudioLoading}
+          />
         </>
       )}
-      {loaded && !featuredAudiobooks.length && <ErrorState />}
+      {areBooksLoaded && !featuredAudiobooks.length && <ErrorState />}
     </Layout>
   );
 };
