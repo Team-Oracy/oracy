@@ -7,10 +7,11 @@ import ChevronDownIcon from "../public/icons/chevron-down.svg";
 import { useEffect, useState, useRef } from "react";
 import AudioPlayer from "../utils/audioPlayer";
 
-const Player = ({ book, isPlaying = false }) => {
+const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
   const [bookState, setBookState] = useState();
   const [isFullPlayer, setIsFullPlayer] = useState(false);
   const [isPlayingState, setIsPlayingState] = useState(false);
+  const [isAudioLoadingState, setIsAudioLoadingState] = useState(false);
   const [isUserScrubbing, setIsUserScrubbing] = useState(false);
   const [theInterval, setTheInterval] = useState(null);
   const playerScrubberBarActiveRef = useRef();
@@ -61,6 +62,19 @@ const Player = ({ book, isPlaying = false }) => {
   }
 
   useEffect(() => {
+    if (isFullPlayer) {
+      requestAnimationFrame(() => {
+        if (!isUserScrubbing && playerScrubberRef.current) {
+          const elapsed = AudioPlayer.getCurrentPosition();
+          const percentage = elapsed / AudioPlayer.getDuration();
+          const playerScrubberWidth = playerScrubberRef.current.clientWidth;
+          const xPos = percentage * playerScrubberWidth;
+
+          playerScrubberBarActiveRef.current.style.width = `${xPos}px`;
+          playerScrubberThumbRef.current.style.transform = `translateX(${xPos}px)`;
+        }
+      });
+    }
     let xDown, yDown;
 
     function handleTouchStart(evt) {
@@ -99,17 +113,10 @@ const Player = ({ book, isPlaying = false }) => {
   }, [isFullPlayer]);
 
   useEffect(() => {
-    // AudioPlayer.audioStarted(book => {
-    //   setBook(book);
-    //   setIsPlaying(true);
-    // });
-    // AudioPlayer.audioPaused(() => {
-    //   setIsPlaying(false);
-    //   clearInterval(theInterval);
-    // });
     setBookState(book);
     setIsPlayingState(isPlaying);
-  }, [book, isPlaying]);
+    setIsAudioLoadingState(isAudioLoading);
+  }, [book, isPlaying, isAudioLoading]);
 
   useEffect(() => {
     function createScrubAnimation() {
@@ -121,6 +128,7 @@ const Player = ({ book, isPlaying = false }) => {
               const percentage = elapsed / AudioPlayer.getDuration();
               const playerScrubberWidth = playerScrubberRef.current.clientWidth;
               const xPos = percentage * playerScrubberWidth;
+
               playerScrubberBarActiveRef.current.style.width = `${xPos}px`;
               playerScrubberThumbRef.current.style.transform = `translateX(${xPos}px)`;
             }
@@ -129,7 +137,7 @@ const Player = ({ book, isPlaying = false }) => {
       );
     }
 
-    if (!isUserScrubbing && isPlaying && theInterval === null) {
+    if (!isUserScrubbing && isPlayingState && theInterval === null) {
       createScrubAnimation();
     }
     if (isUserScrubbing) {
@@ -145,8 +153,8 @@ const Player = ({ book, isPlaying = false }) => {
 
   const playerClassnames = `player ${isFullPlayer ? "-full" : "-mini"} ${
     isPlayingState ? "-playing" : ""
-  }`;
-  return bookState ? (
+  } ${isAudioLoadingState ? "-loading" : ""}`;
+  return bookState && true ? (
     <div className={playerClassnames} id="player">
       <div
         className="playerMain"
@@ -251,9 +259,7 @@ const Player = ({ book, isPlaying = false }) => {
         </div>
       </div>
     </div>
-  ) : (
-    <h1>hello</h1>
-  );
+  ) : null;
 };
 
 export default Player;

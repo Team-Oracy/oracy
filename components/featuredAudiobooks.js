@@ -2,7 +2,8 @@ import AudiobookListItem from "./audioBookListItem";
 
 const FeaturedAudiobooks = ({
   featuredAudiobooks,
-  onPlayStateChange = () => {}
+  onPlayStateChange = () => {},
+  onLoadingStateChange = () => {}
 }) => {
   return (
     <div className="mainContentIsLoaded">
@@ -13,6 +14,7 @@ const FeaturedAudiobooks = ({
             key={book.id}
             book={book}
             onPlayStateChange={onPlayStateChange}
+            onLoadingStateChange={onLoadingStateChange}
           />
         ))}
       </ul>
