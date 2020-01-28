@@ -20,6 +20,7 @@ class AudioPlayer {
 
   _createHowlerObject(book, events, trackIndex) {
     howler = new Howl({
+      html5: true,
       src: audioTracks[trackIndex],
       onplay: () => somethingIsPlayingCb(book),
       onpause: () => somethingPausedCb(book),
