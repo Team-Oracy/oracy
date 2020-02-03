@@ -4,7 +4,7 @@ import PauseIcon from "../public/icons/pause.svg";
 import AudioPlayer from "../utils/audioPlayer";
 import { useState, useEffect } from "react";
 
-const AudiobookListItem = ({
+const AudioBookListItem = ({
   book,
   onPlayStateChange = () => {},
   onLoadingStateChange = () => {}
@@ -87,4 +87,4 @@ const AudiobookListItem = ({
   );
 };
 
-export default AudiobookListItem;
+export default AudioBookListItem;

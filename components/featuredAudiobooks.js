@@ -1,4 +1,4 @@
-import AudiobookListItem from "./audioBookListItem";
+import AudioBookListItem from "./audioBookListItem";
 
 const FeaturedAudiobooks = ({
   featuredAudiobooks,
@@ -10,7 +10,7 @@ const FeaturedAudiobooks = ({
       <h2 className="mainContentListTitle">Featured Audiobooks</h2>
       <ul className="list unstyled">
         {featuredAudiobooks.map(book => (
-          <AudiobookListItem
+          <AudioBookListItem
             key={book.id}
             book={book}
             onPlayStateChange={onPlayStateChange}
