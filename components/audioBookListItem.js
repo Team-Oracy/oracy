@@ -33,6 +33,13 @@ const AudioBookListItem = ({
       onPlayStateChange(book, false);
       setIsPlaying(false);
     });
+
+    const progress = JSON.parse(localStorage.getItem("progress"));
+    if (progress && progress.book && progress.book.id === book.id) {
+      onLoadingStateChange(book, false);
+      setIsPlaying(false);
+      setIsPaused(true);
+    }
   }, []);
   return (
     <li className={className}>
