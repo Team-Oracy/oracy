@@ -39,6 +39,7 @@ const AudioBookListItem = ({
       onLoadingStateChange(book, false);
       setIsPlaying(false);
       setIsPaused(true);
+      AudioPlayer.setBook(book, {}, progress.trackIndex);
     }
   }, []);
   return (
@@ -62,13 +63,14 @@ const AudioBookListItem = ({
 
           setIsLoading(true);
           onLoadingStateChange(book, true);
-          AudioPlayer.play(book, {
+          AudioPlayer.setBook(book, {
             onLoad: () => {
               onLoadingStateChange(book, false);
               setIsLoading(false);
               setIsPlaying(true);
             }
           });
+          AudioPlayer.play();
         }}
         className="listItemImage unstyled"
       >

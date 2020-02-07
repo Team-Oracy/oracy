@@ -9,7 +9,11 @@ let somethingIsPlayingCb = () => {};
 let somethingPausedCb = () => {};
 
 class AudioPlayer {
-  play(book, events = {}, trackIndex = 0) {
+  play() {
+    howler.play();
+  }
+
+  setBook(book, events = {}, trackIndex = 0) {
     audioTracks = book.audioTracks;
     if (howler) {
       howler.stop();
@@ -24,6 +28,7 @@ class AudioPlayer {
 
   _createHowlerObject(book, events, trackIndex) {
     let progressInterval;
+    if (progressInterval) clearInterval(progressInterval);
     howler = new Howl({
       html5: true,
       src: audioTracks[trackIndex],
@@ -64,7 +69,6 @@ class AudioPlayer {
         }
       }
     });
-    howler.play();
   }
 
   pause() {
