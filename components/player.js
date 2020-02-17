@@ -32,17 +32,17 @@ const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
   }
 
   function setScrubPosition() {
-    requestAnimationFrame(() => {
-      if (!isUserScrubbing && playerScrubberRef.current) {
-        const elapsed = AudioPlayer.getCurrentPosition();
-        const percentage = elapsed / AudioPlayer.getDuration();
-        const playerScrubberWidth = playerScrubberRef.current.clientWidth;
-        const xPos = percentage * playerScrubberWidth;
-
-        playerScrubberBarActiveRef.current.style.width = `${xPos}px`;
-        playerScrubberThumbRef.current.style.transform = `translateX(${xPos}px)`;
-      }
-    });
+    if (!isUserScrubbing && playerScrubberRef.current) {
+      console.log("AudioPlayer", AudioPlayer);
+      const elapsed = AudioPlayer.getCurrentPosition();
+      const percentage = elapsed / AudioPlayer.getDuration();
+      const playerScrubberWidth = playerScrubberRef.current.clientWidth;
+      const xPos = percentage * playerScrubberWidth;
+      requestAnimationFrame(() => {
+        // playerScrubberBarActiveRef.current.style.width = `${xPos}px`;
+        // playerScrubberThumbRef.current.style.transform = `translateX(${xPos}px)`;
+      });
+    }
   }
 
   function scrubbing(e) {

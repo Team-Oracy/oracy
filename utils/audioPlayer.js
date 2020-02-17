@@ -9,11 +9,12 @@ let somethingIsPlayingCb = () => {};
 let somethingPausedCb = () => {};
 
 class AudioPlayer {
-  play() {
+  play(elapsedTime) {
+    if (elapsedTime) howler.seek(elapsedTime);
     howler.play();
   }
 
-  setBook(book, events = {}, trackIndex = 0) {
+  setBook(book, events = {}, trackIndex = 0, elapsedTime = 0) {
     audioTracks = book.audioTracks;
     if (howler) {
       howler.stop();
@@ -24,24 +25,27 @@ class AudioPlayer {
     }
 
     this._createHowlerObject(book, events, trackIndex);
+    howler.seek(elapsedTime);
   }
 
   _createHowlerObject(book, events, trackIndex) {
     let progressInterval;
-    if (progressInterval) clearInterval(progressInterval);
+    if (howler) howler.unload();
     howler = new Howl({
       html5: true,
       src: audioTracks[trackIndex],
       onplay: () => {
         progressInterval = setInterval(() => {
-          localStorage.setItem(
-            "progress",
-            JSON.stringify({
-              book,
-              trackIndex,
-              elapsedTime: this.getCurrentPosition()
-            })
-          );
+          const elapsedTime = this.getCurrentPosition();
+          if (typeof elapsedTime !== "object")
+            localStorage.setItem(
+              "progress",
+              JSON.stringify({
+                book,
+                trackIndex,
+                elapsedTime
+              })
+            );
         }, 1000);
         subscribersStarted
           .filter(s => s.id === book.id)
@@ -61,6 +65,9 @@ class AudioPlayer {
           new Howl({
             src: nextTrack
           });
+      },
+      onstop: () => {
+        clearInterval(progressInterval);
       },
       onend: () => {
         clearInterval(progressInterval);
@@ -98,6 +105,7 @@ class AudioPlayer {
   }
 
   getCurrentPosition() {
+    debugger;
     return howler.seek();
   }
 
