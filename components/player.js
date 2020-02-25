@@ -33,14 +33,13 @@ const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
 
   function setScrubPosition() {
     if (!isUserScrubbing && playerScrubberRef.current) {
-      console.log("AudioPlayer", AudioPlayer);
       const elapsed = AudioPlayer.getCurrentPosition();
       const percentage = elapsed / AudioPlayer.getDuration();
       const playerScrubberWidth = playerScrubberRef.current.clientWidth;
       const xPos = percentage * playerScrubberWidth;
       requestAnimationFrame(() => {
-        // playerScrubberBarActiveRef.current.style.width = `${xPos}px`;
-        // playerScrubberThumbRef.current.style.transform = `translateX(${xPos}px)`;
+        playerScrubberBarActiveRef.current.style.width = `${xPos}px`;
+        playerScrubberThumbRef.current.style.transform = `translateX(${xPos}px)`;
       });
     }
   }

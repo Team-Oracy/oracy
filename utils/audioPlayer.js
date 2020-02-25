@@ -59,12 +59,6 @@ class AudioPlayer {
       },
       onload: () => {
         if (events.onLoad) events.onLoad();
-        const nextTrack = audioTracks[trackIndex + 1];
-        if (nextTrack)
-          //preload the next audio track
-          new Howl({
-            src: nextTrack
-          });
       },
       onstop: () => {
         clearInterval(progressInterval);
@@ -73,6 +67,7 @@ class AudioPlayer {
         clearInterval(progressInterval);
         if (trackIndex < audioTracks.length - 1) {
           this._createHowlerObject(book, events, trackIndex + 1);
+          this.play();
         }
       }
     });
@@ -105,7 +100,6 @@ class AudioPlayer {
   }
 
   getCurrentPosition() {
-    debugger;
     return howler.seek();
   }
 

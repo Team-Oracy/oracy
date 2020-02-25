@@ -36,7 +36,6 @@ const AudioBookListItem = ({
 
     const progress = JSON.parse(localStorage.getItem("progress"));
     if (progress && progress.book && progress.book.id === book.id) {
-      debugger;
       onLoadingStateChange(book, false);
       setIsPlaying(false);
       setIsPaused(true);
