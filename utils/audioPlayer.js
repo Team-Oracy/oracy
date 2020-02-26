@@ -5,8 +5,6 @@ let subscribersStopped = [];
 let subscribersStarted = [];
 let subscribersPaused = [];
 let audioTracks = [];
-let somethingIsPlayingCb = () => {};
-let somethingPausedCb = () => {};
 
 class AudioPlayer {
   play(elapsedTime) {
@@ -27,26 +25,31 @@ class AudioPlayer {
     this._createHowlerObject(book, events, trackIndex);
     howler.seek(elapsedTime);
   }
+  _saveProgress(book, trackIndex) {
+    const elapsedTime = this.getCurrentPosition();
+    if (book && typeof elapsedTime !== "object")
+      localStorage.setItem(
+        "progress",
+        JSON.stringify({
+          book,
+          trackIndex,
+          elapsedTime
+        })
+      );
+  }
 
   _createHowlerObject(book, events, trackIndex) {
     let progressInterval;
     if (howler) howler.unload();
     howler = new Howl({
+      autoUnlock: false,
       html5: true,
       src: audioTracks[trackIndex],
       onplay: () => {
-        progressInterval = setInterval(() => {
-          const elapsedTime = this.getCurrentPosition();
-          if (typeof elapsedTime !== "object")
-            localStorage.setItem(
-              "progress",
-              JSON.stringify({
-                book,
-                trackIndex,
-                elapsedTime
-              })
-            );
-        }, 1000);
+        progressInterval = setInterval(
+          () => this._saveProgress(book, trackIndex),
+          1000
+        );
         subscribersStarted
           .filter(s => s.id === book.id)
           .forEach(s => s.callback(trackIndex));
@@ -60,6 +63,7 @@ class AudioPlayer {
       onload: () => {
         if (events.onLoad) events.onLoad();
       },
+      onseek: () => this._saveProgress(book, trackIndex),
       onstop: () => {
         clearInterval(progressInterval);
       },

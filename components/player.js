@@ -10,8 +10,10 @@ import AudioPlayer from "../utils/audioPlayer";
 const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
   const [bookState, setBookState] = useState();
   const [isFullPlayer, setIsFullPlayer] = useState(false);
-  const [isPlayingState, setIsPlayingState] = useState(false);
-  const [isAudioLoadingState, setIsAudioLoadingState] = useState(false);
+  const [isPlayingState, setIsPlayingState] = useState(isPlaying);
+  const [isAudioLoadingState, setIsAudioLoadingState] = useState(
+    isAudioLoading
+  );
   const [isUserScrubbing, setIsUserScrubbing] = useState(false);
   const [theInterval, setTheInterval] = useState(null);
   const playerScrubberBarActiveRef = useRef();
@@ -123,7 +125,7 @@ const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
     if (!isUserScrubbing && isPlayingState && theInterval === null) {
       setTheInterval(setInterval(setScrubPosition, 1000));
     }
-    if (isUserScrubbing) {
+    if (isUserScrubbing || isPlayingState) {
       clearInterval(theInterval);
       setTheInterval(null);
     }

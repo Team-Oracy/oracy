@@ -40,6 +40,8 @@ const AudioBookListItem = ({
       setIsPlaying(false);
       setIsPaused(true);
       AudioPlayer.setBook(book, {}, progress.trackIndex, progress.elapsedTime);
+      AudioPlayer.play();
+      AudioPlayer.pause();
     }
   }, []);
   return (
