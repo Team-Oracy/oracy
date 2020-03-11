@@ -10,8 +10,10 @@ import AudioPlayer from "../utils/audioPlayer";
 const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
   const [bookState, setBookState] = useState();
   const [isFullPlayer, setIsFullPlayer] = useState(false);
-  const [isPlayingState, setIsPlayingState] = useState(false);
-  const [isAudioLoadingState, setIsAudioLoadingState] = useState(false);
+  const [isPlayingState, setIsPlayingState] = useState(isPlaying);
+  const [isAudioLoadingState, setIsAudioLoadingState] = useState(
+    isAudioLoading
+  );
   const [isUserScrubbing, setIsUserScrubbing] = useState(false);
   const [theInterval, setTheInterval] = useState(null);
   const playerScrubberBarActiveRef = useRef();
@@ -29,6 +31,19 @@ const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
     const htmlElem = document.getElementsByTagName("html")[0];
     htmlElem.addEventListener("mousemove", scrubbing);
     htmlElem.addEventListener("mouseup", scrubbed);
+  }
+
+  function setScrubPosition() {
+    if (!isUserScrubbing && playerScrubberRef.current) {
+      const elapsed = AudioPlayer.getCurrentPosition();
+      const percentage = elapsed / AudioPlayer.getDuration();
+      const playerScrubberWidth = playerScrubberRef.current.clientWidth;
+      const xPos = percentage * playerScrubberWidth;
+      requestAnimationFrame(() => {
+        playerScrubberBarActiveRef.current.style.width = `${xPos}px`;
+        playerScrubberThumbRef.current.style.transform = `translateX(${xPos}px)`;
+      });
+    }
   }
 
   function scrubbing(e) {
@@ -62,19 +77,7 @@ const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
   }
 
   useEffect(() => {
-    if (isFullPlayer) {
-      requestAnimationFrame(() => {
-        if (!isUserScrubbing && playerScrubberRef.current) {
-          const elapsed = AudioPlayer.getCurrentPosition();
-          const percentage = elapsed / AudioPlayer.getDuration();
-          const playerScrubberWidth = playerScrubberRef.current.clientWidth;
-          const xPos = percentage * playerScrubberWidth;
-
-          playerScrubberBarActiveRef.current.style.width = `${xPos}px`;
-          playerScrubberThumbRef.current.style.transform = `translateX(${xPos}px)`;
-        }
-      });
-    }
+    if (isFullPlayer) setScrubPosition();
     let xDown, yDown;
 
     function handleTouchStart(evt) {
@@ -119,28 +122,10 @@ const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
   }, [book, isPlaying, isAudioLoading]);
 
   useEffect(() => {
-    function createScrubAnimation() {
-      setTheInterval(
-        setInterval(() => {
-          requestAnimationFrame(() => {
-            if (!isUserScrubbing && playerScrubberRef.current) {
-              const elapsed = AudioPlayer.getCurrentPosition();
-              const percentage = elapsed / AudioPlayer.getDuration();
-              const playerScrubberWidth = playerScrubberRef.current.clientWidth;
-              const xPos = percentage * playerScrubberWidth;
-
-              playerScrubberBarActiveRef.current.style.width = `${xPos}px`;
-              playerScrubberThumbRef.current.style.transform = `translateX(${xPos}px)`;
-            }
-          });
-        }, 1000)
-      );
-    }
-
     if (!isUserScrubbing && isPlayingState && theInterval === null) {
-      createScrubAnimation();
+      setTheInterval(setInterval(setScrubPosition, 1000));
     }
-    if (isUserScrubbing) {
+    if (isUserScrubbing || !isPlayingState) {
       clearInterval(theInterval);
       setTheInterval(null);
     }

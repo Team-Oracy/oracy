@@ -5,11 +5,14 @@ let subscribersStopped = [];
 let subscribersStarted = [];
 let subscribersPaused = [];
 let audioTracks = [];
-let somethingIsPlayingCb = () => {};
-let somethingPausedCb = () => {};
 
 class AudioPlayer {
-  play(book, events = {}) {
+  play(elapsedTime) {
+    if (elapsedTime) howler.seek(elapsedTime);
+    howler.play();
+  }
+
+  setBook(book, events = {}, trackIndex = 0, elapsedTime = 0) {
     audioTracks = book.audioTracks;
     if (howler) {
       howler.stop();
@@ -19,39 +22,58 @@ class AudioPlayer {
         .forEach(s => s.callback());
     }
 
-    this._createHowlerObject(book, events, 0);
+    this._createHowlerObject(book, events, trackIndex);
+    howler.seek(elapsedTime);
+  }
+  _saveProgress(book, trackIndex) {
+    const elapsedTime = this.getCurrentPosition();
+    if (book && typeof elapsedTime !== "object")
+      localStorage.setItem(
+        "progress",
+        JSON.stringify({
+          book,
+          trackIndex,
+          elapsedTime
+        })
+      );
   }
 
   _createHowlerObject(book, events, trackIndex) {
+    let progressInterval;
+    if (howler) howler.unload();
     howler = new Howl({
       html5: true,
       src: audioTracks[trackIndex],
       onplay: () => {
+        progressInterval = setInterval(
+          () => this._saveProgress(book, trackIndex),
+          1000
+        );
         subscribersStarted
           .filter(s => s.id === book.id)
-          .forEach(s => s.callback());
+          .forEach(s => s.callback(trackIndex));
       },
       onpause: () => {
+        clearInterval(progressInterval);
         subscribersPaused
           .filter(s => s.id === book.id)
           .forEach(s => s.callback());
       },
       onload: () => {
         if (events.onLoad) events.onLoad();
-        const nextTrack = audioTracks[trackIndex + 1];
-        if (nextTrack)
-          //preload the next audio track
-          new Howl({
-            src: nextTrack
-          });
+      },
+      onseek: () => this._saveProgress(book, trackIndex),
+      onstop: () => {
+        clearInterval(progressInterval);
       },
       onend: () => {
+        clearInterval(progressInterval);
         if (trackIndex < audioTracks.length - 1) {
           this._createHowlerObject(book, events, trackIndex + 1);
+          this.play();
         }
       }
     });
-    howler.play();
   }
 
   pause() {
@@ -79,8 +101,6 @@ class AudioPlayer {
   onAudioPaused(id, cb) {
     subscribersPaused.push({ id, callback: cb });
   }
-
-  onScrubbing() {}
 
   getCurrentPosition() {
     return howler.seek();
