@@ -42,7 +42,6 @@ class AudioPlayer {
     let progressInterval;
     if (howler) howler.unload();
     howler = new Howl({
-      autoUnlock: false,
       html5: true,
       src: audioTracks[trackIndex],
       onplay: () => {
