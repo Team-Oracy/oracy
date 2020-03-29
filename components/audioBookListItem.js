@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 const AudioBookListItem = ({
   book,
   onPlayStateChange = () => {},
-  onLoadingStateChange = () => {}
+  onLoadingStateChange = () => {},
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -69,7 +69,7 @@ const AudioBookListItem = ({
               onLoadingStateChange(book, false);
               setIsLoading(false);
               setIsPlaying(true);
-            }
+            },
           });
           AudioPlayer.play();
         }}

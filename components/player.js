@@ -186,7 +186,7 @@ const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
               className="playerControlsRewind"
               id="playerControlsRewind"
               title="Rewind 10 seconds"
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 AudioPlayer.skip(-10);
               }}
@@ -195,7 +195,7 @@ const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
             </div>
             <div
               className="playerControlsPlayPause"
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 if (isPlaying) AudioPlayer.pause();
                 else AudioPlayer.resume();
@@ -223,7 +223,7 @@ const Player = ({ book, isPlaying = false, isAudioLoading = false }) => {
               className="playerControlsForward"
               id="playerControlsForward"
               title="Forward 10 seconds"
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 AudioPlayer.skip(10);
               }}

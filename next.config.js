@@ -3,7 +3,7 @@ const withSass = require("@zeit/next-sass");
 const withPlugins = require("next-compose-plugins");
 
 const nextConfig = {
-  webpack: config => {
+  webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
       use: [
@@ -21,13 +21,13 @@ const nextConfig = {
                       return ${jsx};
                     };
                     export default ${componentName};
-                  `
-          }
-        }
-      ]
+                  `,
+          },
+        },
+      ],
     });
     return config;
-  }
+  },
 };
 
 module.exports = withPlugins([withSass], nextConfig);
