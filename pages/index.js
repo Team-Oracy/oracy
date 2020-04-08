@@ -1,9 +1,10 @@
+/* global require */
 import React, { useState } from "react";
 import "../styles/app.sass";
 import FeaturedAudiobooks from "../components/featuredAudiobooks";
 import ErrorState from "../components/errorState";
 import Layout from "../components/layout";
-import Player from "../components/player";
+import Player from "../components/player/player";
 const { featuredAudiobooks } = require("./cachedData");
 
 const Home = () => {
