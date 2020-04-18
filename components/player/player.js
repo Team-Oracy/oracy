@@ -1,91 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import RewindIcon from "../../public/icons/rewind-10.svg";
 import LoadingIcon from "../../public/icons/loading.svg";
 import PlayIcon from "../../public/icons/play.svg";
 import PauseIcon from "../../public/icons/pause.svg";
 import ForwardIcon from "../../public/icons/fast-forward-10.svg";
 import ChevronDownIcon from "../../public/icons/chevron-down.svg";
-import AudioPlayer from "../../utils/audioPlayer";
-
-import { Machine } from "xstate";
-import { useMachine } from "@xstate/react";
 import Scrubber from "./scrubber";
-
-const playerMachine = Machine({
-  id: "audioPlayer",
-  initial: "idle",
-  states: {
-    idle: {
-      on: {
-        PLAY_PAUSE: "loading",
-      },
-    },
-    loading: {
-      invoke: {
-        src: "loadAudio",
-        onDone: { target: "playing", actions: ["playAudio"] },
-      },
-    },
-    playing: {
-      on: {
-        PLAY_PAUSE: "paused",
-        SCRUB: "scrubbing_played",
-        PREVIOUS: { target: "playing", actions: ["previous"] },
-        FORWARD: { target: "playing", actions: ["forward"] },
-      },
-    },
-    paused: {
-      entry: "pauseAudio",
-      on: {
-        SCRUB: "scrubbing_paused",
-        PLAY_PAUSE: "playing",
-        PREVIOUS: { target: "paused", actions: ["previous"] },
-        FORWARD: { target: "playing", actions: ["forward"] },
-      },
-    },
-    scrubbing_played: {
-      on: {
-        STOP_SCRUBBING: "playing",
-      },
-    },
-    scrubbing_paused: {
-      on: {
-        STOP_SCRUBBING: "paused",
-      },
-    },
-  },
-});
+import { AudioPlayerContext } from "../../pages";
 
 const Player = ({ book }) => {
   const [bookState, setBookState] = useState(book);
   const [isFullPlayer, setIsFullPlayer] = useState(false);
   const [progressPercentage, setProgressPercentage] = useState(0);
-
-  const [current, send] = useMachine(playerMachine, {
-    services: {
-      loadAudio: () => {
-        return new Promise((resolve) => {
-          AudioPlayer.setBook(book, {
-            onLoad: resolve,
-          });
-        });
-      },
-    },
-    actions: {
-      pauseAudio: () => {
-        AudioPlayer.pause();
-      },
-      playAudio: () => {
-        AudioPlayer.play();
-      },
-      previous: () => {
-        AudioPlayer.skip(-10);
-      },
-      forward: () => {
-        AudioPlayer.skip(10);
-      },
-    },
-  });
+  const [_, stateMachine, exposedPlayer] = useContext(AudioPlayerContext);
 
   let setProgress = useRef();
 
@@ -94,11 +21,11 @@ const Player = ({ book }) => {
   }, [book]);
 
   useEffect(() => {
-    if (current.matches("playing")) {
+    if (stateMachine.matches("playing")) {
       setProgress.current = setInterval(() => {
-        if (current.matches("playing")) {
-          const elapsed = AudioPlayer.getCurrentPosition();
-          const percentage = elapsed / AudioPlayer.getDuration();
+        if (stateMachine.matches("playing")) {
+          const percentage = exposedPlayer.getProgressPercentage();
+
           setProgressPercentage(percentage);
         }
       }, 1000);
@@ -106,11 +33,11 @@ const Player = ({ book }) => {
     return () => {
       clearInterval(setProgress.current);
     };
-  }, [current.value]);
+  }, [stateMachine.value]);
 
   const playerClassnames = `player ${isFullPlayer ? "-full" : "-mini"} ${
-    current.matches("playing") ? "-playing" : ""
-  } ${current.matches("loading") ? "-loading" : ""}`;
+    stateMachine.matches("playing") ? "-playing" : ""
+  } ${stateMachine.matches("loading") ? "-loading" : ""}`;
 
   return bookState ? (
     <div className={playerClassnames} id="player">
@@ -137,14 +64,12 @@ const Player = ({ book }) => {
             <Scrubber
               percentage={progressPercentage}
               onScrubStarted={() => {
-                send("SCRUB");
+                exposedPlayer.sendEvent("SCRUB");
               }}
               onScrubEnded={(percentage) => {
                 // Set audio seek to new position
-                const duration = AudioPlayer.getDuration();
-                AudioPlayer.seek(percentage * duration);
+                exposedPlayer.sendEvent("STOP_SCRUBBING", percentage);
                 setProgressPercentage(percentage);
-                send("STOP_SCRUBBING");
               }}
             ></Scrubber>
           )}
@@ -155,7 +80,7 @@ const Player = ({ book }) => {
               title="Rewind 10 seconds"
               onClick={(e) => {
                 e.stopPropagation();
-                send("PREVIOUS");
+                exposedPlayer.sendEvent("PREVIOUS");
               }}
             >
               <RewindIcon />
@@ -164,7 +89,7 @@ const Player = ({ book }) => {
               className="playerControlsPlayPause"
               onClick={(e) => {
                 e.stopPropagation();
-                send("PLAY_PAUSE");
+                exposedPlayer.sendEvent("PLAY_PAUSE");
               }}
             >
               <div className="playerControlsLoading" title="Loading">
@@ -191,7 +116,7 @@ const Player = ({ book }) => {
               title="Forward 10 seconds"
               onClick={(e) => {
                 e.stopPropagation();
-                send("FORWARD");
+                exposedPlayer.sendEvent("FORWARD");
               }}
             >
               <ForwardIcon />

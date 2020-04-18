@@ -5,33 +5,24 @@ import FeaturedAudiobooks from "../components/featuredAudiobooks";
 import ErrorState from "../components/errorState";
 import Layout from "../components/layout";
 import Player from "../components/player/player";
+import useAudioPlayer from "../utils/useAudioPlayer";
 const { featuredAudiobooks } = require("./cachedData");
 
+export const AudioPlayerContext = React.createContext();
+
 const Home = () => {
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [book, setBook] = useState(null);
-  const [isAudioLoading, SetIsAudioLoading] = useState(false);
 
   return (
     <Layout>
       {featuredAudiobooks.length && (
-        <>
+        <AudioPlayerContext.Provider value={useAudioPlayer()}>
           <FeaturedAudiobooks
             featuredAudiobooks={featuredAudiobooks}
-            onPlayStateChange={(_, isPlaying) => {
-              setIsAudioPlaying(isPlaying);
-            }}
-            onLoadingStateChange={(selectedBook, isLoading) => {
-              setBook(selectedBook);
-              SetIsAudioLoading(isLoading);
-            }}
+            onBookSelected={setBook}
           />
-          <Player
-            book={book}
-            isPlaying={isAudioPlaying}
-            isAudioLoading={isAudioLoading}
-          />
-        </>
+          <Player book={book} />
+        </AudioPlayerContext.Provider>
       )}
       {!featuredAudiobooks.length && <ErrorState />}
     </Layout>
