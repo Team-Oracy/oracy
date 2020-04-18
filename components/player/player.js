@@ -23,13 +23,13 @@ const playerMachine = Machine({
     loading: {
       invoke: {
         src: "loadAudio",
-        onDone: { target: "playing" },
+        onDone: { target: "playing", actions: ["playAudio"] },
       },
     },
     playing: {
-      entry: "playAudio",
       on: {
         PLAY_PAUSE: "paused",
+        SCRUB: "scrubbing_played",
         PREVIOUS: { target: "playing", actions: ["previous"] },
         FORWARD: { target: "playing", actions: ["forward"] },
       },
@@ -37,9 +37,20 @@ const playerMachine = Machine({
     paused: {
       entry: "pauseAudio",
       on: {
+        SCRUB: "scrubbing_paused",
         PLAY_PAUSE: "playing",
         PREVIOUS: { target: "paused", actions: ["previous"] },
         FORWARD: { target: "playing", actions: ["forward"] },
+      },
+    },
+    scrubbing_played: {
+      on: {
+        STOP_SCRUBBING: "playing",
+      },
+    },
+    scrubbing_paused: {
+      on: {
+        STOP_SCRUBBING: "paused",
       },
     },
   },
@@ -87,7 +98,6 @@ const Player = ({ book }) => {
       setProgress.current = setInterval(() => {
         if (current.matches("playing")) {
           const elapsed = AudioPlayer.getCurrentPosition();
-          console.log("elapsed", elapsed);
           const percentage = elapsed / AudioPlayer.getDuration();
           setProgressPercentage(percentage);
         }
@@ -124,7 +134,19 @@ const Player = ({ book }) => {
             </div>
           </div>
           {isFullPlayer && (
-            <Scrubber percentage={progressPercentage}></Scrubber>
+            <Scrubber
+              percentage={progressPercentage}
+              onScrubStarted={() => {
+                send("SCRUB");
+              }}
+              onScrubEnded={(percentage) => {
+                // Set audio seek to new position
+                const duration = AudioPlayer.getDuration();
+                AudioPlayer.seek(percentage * duration);
+                setProgressPercentage(percentage);
+                send("STOP_SCRUBBING");
+              }}
+            ></Scrubber>
           )}
           <div className="playerControls">
             <div
