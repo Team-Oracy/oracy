@@ -1,9 +1,9 @@
+import React from "react";
 import AudioBookListItem from "./audioBookListItem";
 
 const FeaturedAudiobooks = ({
   featuredAudiobooks,
-  onPlayStateChange = () => {},
-  onLoadingStateChange = () => {},
+  onBookSelected = () => {},
 }) => {
   return (
     <div className="mainContentIsLoaded">
@@ -13,8 +13,7 @@ const FeaturedAudiobooks = ({
           <AudioBookListItem
             key={book.id}
             book={book}
-            onPlayStateChange={onPlayStateChange}
-            onLoadingStateChange={onLoadingStateChange}
+            onBookSelected={onBookSelected}
           />
         ))}
       </ul>

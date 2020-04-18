@@ -18,10 +18,9 @@ class AudioPlayer {
       howler.stop();
       howler.unload();
       subscribersStopped
-        .filter(s => s.id !== book.id)
-        .forEach(s => s.callback());
+        .filter((s) => s.id !== book.id)
+        .forEach((s) => s.callback());
     }
-
     this._createHowlerObject(book, events, trackIndex);
     howler.seek(elapsedTime);
   }
@@ -33,7 +32,7 @@ class AudioPlayer {
         JSON.stringify({
           book,
           trackIndex,
-          elapsedTime
+          elapsedTime,
         })
       );
   }
@@ -50,15 +49,15 @@ class AudioPlayer {
           1000
         );
         subscribersStarted
-          .filter(s => s.id === book.id)
-          .forEach(s => s.callback(trackIndex));
+          .filter((s) => s.id === book.id)
+          .forEach((s) => s.callback(trackIndex));
         if (events.onPlay) events.onPlay();
       },
       onpause: () => {
         clearInterval(progressInterval);
         subscribersPaused
-          .filter(s => s.id === book.id)
-          .forEach(s => s.callback());
+          .filter((s) => s.id === book.id)
+          .forEach((s) => s.callback());
       },
       onload: () => {
         if (events.onLoad) events.onLoad();
@@ -73,7 +72,7 @@ class AudioPlayer {
           this._createHowlerObject(book, events, trackIndex + 1);
           this.play();
         }
-      }
+      },
     });
   }
 

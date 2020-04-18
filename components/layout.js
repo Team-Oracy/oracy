@@ -1,10 +1,11 @@
 import Head from "next/head";
+import React from "react";
 
 const Layout = ({ children }) => (
   <>
     <Head>
       <link rel="icon" href="img/favicon.png" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"

@@ -1,77 +1,39 @@
+import React, { useEffect, useContext } from "react";
 import LoadingIcon from "../public/icons/loading.svg";
 import PlayIcon from "../public/icons/play.svg";
 import PauseIcon from "../public/icons/pause.svg";
-import AudioPlayer from "../utils/audioPlayer";
-import { useState, useEffect } from "react";
+import { AudioPlayerContext } from "../pages";
 
-const AudioBookListItem = ({
-  book,
-  onPlayStateChange = () => {},
-  onLoadingStateChange = () => {},
-}) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const className = `listItem ${isLoading ? "-loading" : ""} ${
-    isPlaying ? "-playing" : ""
-  }`;
+const AudioBookListItem = ({ book, onBookSelected = () => {} }) => {
+  const [currentBook, stateMachine, exposedPlayer] = useContext(
+    AudioPlayerContext
+  );
+  let className = "";
+  if (currentBook && currentBook.id === book.id)
+    className = `${stateMachine.matches("loading") ? "-loading" : ""} ${
+      stateMachine.matches("playing") ? "-playing" : ""
+    }`;
   useEffect(() => {
-    AudioPlayer.onBookStopped(book.id, () => {
-      setIsPlaying(false);
-      setIsPaused(false);
-      setIsLoading(false);
-      onPlayStateChange(false);
-    });
-
-    AudioPlayer.onAudioStarted(book.id, () => {
-      onPlayStateChange(book, true);
-      setIsPlaying(true);
-    });
-
-    AudioPlayer.onAudioPaused(book.id, () => {
-      onPlayStateChange(book, false);
-      setIsPlaying(false);
-    });
-
     const progress = JSON.parse(localStorage.getItem("progress"));
     if (progress && progress.book && progress.book.id === book.id) {
-      onLoadingStateChange(book, false);
-      setIsPlaying(false);
-      setIsPaused(true);
-      AudioPlayer.setBook(book, {}, progress.trackIndex, progress.elapsedTime);
-      AudioPlayer.pause();
+      exposedPlayer.setBook(
+        book,
+        {},
+        progress.trackIndex,
+        progress.elapsedTime
+      );
     }
   }, []);
+
   return (
-    <li className={className}>
+    <li className={`listItem ` + className}>
       <button
         type="button"
         onClick={() => {
-          if (isPlaying) {
-            AudioPlayer.pause();
-            setIsPlaying(false);
-            setIsPaused(true);
-            return;
-          }
-
-          if (isPaused) {
-            setIsPlaying(true);
-            setIsPaused(false);
-            AudioPlayer.resume();
-            return;
-          }
-
-          setIsLoading(true);
-          onLoadingStateChange(book, true);
-          AudioPlayer.setBook(book, {
-            onLoad: () => {
-              onLoadingStateChange(book, false);
-              setIsLoading(false);
-              setIsPlaying(true);
-            },
-          });
-          AudioPlayer.play();
+          onBookSelected(book);
+          if (!currentBook || (currentBook && currentBook.id !== book.id))
+            exposedPlayer.setBook(book);
+          exposedPlayer.sendEvent("PLAY_PAUSE");
         }}
         className="listItemImage unstyled"
       >
