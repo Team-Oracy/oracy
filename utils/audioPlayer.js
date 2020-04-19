@@ -1,9 +1,6 @@
 import { Howl } from "howler";
 
 let howler;
-let subscribersStopped = [];
-let subscribersStarted = [];
-let subscribersPaused = [];
 let audioTracks = [];
 
 class AudioPlayer {
@@ -17,9 +14,6 @@ class AudioPlayer {
     if (howler) {
       howler.stop();
       howler.unload();
-      subscribersStopped
-        .filter((s) => s.id !== book.id)
-        .forEach((s) => s.callback());
     }
     this._createHowlerObject(book, events, trackIndex);
     howler.seek(elapsedTime);
@@ -48,16 +42,9 @@ class AudioPlayer {
           () => this._saveProgress(book, trackIndex),
           1000
         );
-        subscribersStarted
-          .filter((s) => s.id === book.id)
-          .forEach((s) => s.callback(trackIndex));
-        if (events.onPlay) events.onPlay();
       },
       onpause: () => {
         clearInterval(progressInterval);
-        subscribersPaused
-          .filter((s) => s.id === book.id)
-          .forEach((s) => s.callback());
       },
       onload: () => {
         if (events.onLoad) events.onLoad();
@@ -88,18 +75,6 @@ class AudioPlayer {
     const skipTo = howler.seek() + numOfSeconds;
     if (skipTo < 0) howler.seek(0);
     else howler.seek(skipTo);
-  }
-
-  onBookStopped(id, cb) {
-    subscribersStopped.push({ id, callback: cb });
-  }
-
-  onAudioStarted(id, cb) {
-    subscribersStarted.push({ id, callback: cb });
-  }
-
-  onAudioPaused(id, cb) {
-    subscribersPaused.push({ id, callback: cb });
   }
 
   getCurrentPosition() {
