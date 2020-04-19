@@ -31,9 +31,7 @@ const AudioBookListItem = ({ book, onBookSelected = () => {} }) => {
         type="button"
         onClick={() => {
           onBookSelected(book);
-          if (!currentBook || (currentBook && currentBook.id !== book.id))
-            exposedPlayer.setBook(book);
-          exposedPlayer.sendEvent("PLAY_PAUSE");
+          exposedPlayer.sendEvent("PLAY_PAUSE", book);
         }}
         className="listItemImage unstyled"
       >

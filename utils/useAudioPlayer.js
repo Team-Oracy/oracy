@@ -1,4 +1,4 @@
-import { Machine } from "xstate";
+import { Machine, assign } from "xstate";
 import { useMachine } from "@xstate/react";
 import AudioPlayer from "../utils/audioPlayer";
 import { useState } from "react";
@@ -6,6 +6,9 @@ import { useState } from "react";
 const playerMachine = Machine({
   id: "audioPlayer",
   initial: "idle",
+  context: {
+    currentBook: undefined,
+  },
   states: {
     idle: {
       on: {
@@ -22,7 +25,16 @@ const playerMachine = Machine({
       entry: "playAudio",
       on: {
         CHANGE_BOOK: "idle",
-        PLAY_PAUSE: "paused",
+        PLAY_PAUSE: [
+          {
+            target: "paused",
+            cond: (ctx, event) =>
+              ctx.currentBook && event.data.id === ctx.currentBook.id,
+          },
+          {
+            target: "loading",
+          },
+        ],
         SCRUB: "scrubbing_played",
         PREVIOUS: { target: "playing", actions: ["previous"] },
         FORWARD: { target: "playing", actions: ["forward"] },
@@ -33,7 +45,16 @@ const playerMachine = Machine({
       on: {
         CHANGE_BOOK: "idle",
         SCRUB: "scrubbing_paused",
-        PLAY_PAUSE: "playing",
+        PLAY_PAUSE: [
+          {
+            target: "playing",
+            cond: (ctx, event) =>
+              ctx.currentBook && event.data.id === ctx.currentBook.id,
+          },
+          {
+            target: "loading",
+          },
+        ],
         PREVIOUS: { target: "paused", actions: ["previous"] },
         FORWARD: { target: "playing", actions: ["forward"] },
       },
@@ -53,11 +74,16 @@ const playerMachine = Machine({
 
 function useAudioPlayer() {
   const [currentBook, setCurrentBook] = useState();
+
   const [current, send] = useMachine(playerMachine, {
     services: {
-      loadAudio: () => {
+      loadAudio: (ctx, event) => {
         return new Promise((resolve) => {
-          AudioPlayer.setBook(currentBook, {
+          if (!event.data || (currentBook && event.data.id === currentBook.id))
+            resolve();
+          ctx.currentBook = event.data;
+          setCurrentBook(event.data);
+          AudioPlayer.setBook(event.data, {
             onLoad: resolve,
           });
         });
@@ -67,8 +93,14 @@ function useAudioPlayer() {
       pauseAudio: () => {
         AudioPlayer.pause();
       },
-      playAudio: () => {
-        if (current.historyValue.current === "scrubbing_played") return;
+      playAudio: (_, event) => {
+        if (
+          current.historyValue &&
+          current.historyValue.current === "scrubbing_played"
+        ) {
+          const duration = AudioPlayer.getDuration();
+          AudioPlayer.seek(event.data * duration);
+        }
         AudioPlayer.play();
       },
       previous: () => {
@@ -86,15 +118,12 @@ function useAudioPlayer() {
       return elapsed / AudioPlayer.getDuration();
     },
     sendEvent(event, arg) {
-      if (event === "STOP_SCRUBBING") {
-        const duration = AudioPlayer.getDuration();
-        AudioPlayer.seek(arg * duration);
-      }
-      send(event);
+      send({ type: event, data: arg });
     },
     setBook: (book, events, trackIndex, elapsedTime) => {
-      setCurrentBook(book);
-      send("CHANGE_BOOK");
+      // console.log("book changing", book);
+      // setCurrentBook(book);
+      // send("CHANGE_BOOK");
       // AudioPlayer.setBook(book, events, trackIndex, elapsedTime);
     },
   };
