@@ -13,17 +13,6 @@ const AudioBookListItem = ({ book, onBookSelected = () => {} }) => {
     className = `${stateMachine.matches("loading") ? "-loading" : ""} ${
       stateMachine.matches("playing") ? "-playing" : ""
     }`;
-  useEffect(() => {
-    const progress = JSON.parse(localStorage.getItem("progress"));
-    if (progress && progress.book && progress.book.id === book.id) {
-      exposedPlayer.setBook(
-        book,
-        {},
-        progress.trackIndex,
-        progress.elapsedTime
-      );
-    }
-  }, []);
 
   return (
     <li className={`listItem ` + className}>

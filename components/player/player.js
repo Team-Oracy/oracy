@@ -8,17 +8,14 @@ import ChevronDownIcon from "../../public/icons/chevron-down.svg";
 import Scrubber from "./scrubber";
 import { AudioPlayerContext } from "../../pages";
 
-const Player = ({ book }) => {
-  const [bookState, setBookState] = useState(book);
+const Player = () => {
   const [isFullPlayer, setIsFullPlayer] = useState(false);
   const [progressPercentage, setProgressPercentage] = useState(0);
-  const [_, stateMachine, exposedPlayer] = useContext(AudioPlayerContext);
+  const [currentBook, stateMachine, exposedPlayer] = useContext(
+    AudioPlayerContext
+  );
 
   let setProgress = useRef();
-
-  useEffect(() => {
-    setBookState(book);
-  }, [book]);
 
   useEffect(() => {
     if (stateMachine.matches("playing")) {
@@ -39,7 +36,7 @@ const Player = ({ book }) => {
     stateMachine.matches("playing") ? "-playing" : ""
   } ${stateMachine.matches("loading") ? "-loading" : ""}`;
 
-  return bookState ? (
+  return currentBook ? (
     <div className={playerClassnames} id="player">
       <div
         className="playerMain"
@@ -49,15 +46,15 @@ const Player = ({ book }) => {
           className="playerCoverImage"
           id="playerCoverImage"
           alt=""
-          src={bookState.coverImageSrc}
+          src={currentBook.coverImageSrc}
         />
         <div className="playerInfoControls">
           <div className="playerInfo">
             <div className="playerTitle" id="playerTitle">
-              {bookState.title}
+              {currentBook.title}
             </div>
             <div className="playerAuthor" id="playerAuthor">
-              {bookState.author}
+              {currentBook.author}
             </div>
           </div>
           {isFullPlayer && (
