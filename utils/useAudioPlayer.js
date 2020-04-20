@@ -1,4 +1,4 @@
-import { Machine, assign } from "xstate";
+import { Machine } from "xstate";
 import { useMachine } from "@xstate/react";
 import AudioPlayer from "../utils/audioPlayer";
 import { useState } from "react";
@@ -72,8 +72,8 @@ const playerMachine = Machine({
   },
 });
 
-function useAudioPlayer(book, initialTrackIndex, initialElapsedTime) {
-  const [currentBook, setCurrentBook] = useState(book);
+function useAudioPlayer(initialBook, initialTrackIndex, initialElapsedTime) {
+  const [currentBook, setCurrentBook] = useState(initialBook);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [current, send] = useMachine(playerMachine, {
     services: {
@@ -91,8 +91,12 @@ function useAudioPlayer(book, initialTrackIndex, initialElapsedTime) {
             {
               onLoad: resolve,
             },
-            isInitialLoad ? initialTrackIndex : 0,
-            isInitialLoad ? initialElapsedTime : 0
+            isInitialLoad && event.data.id === initialBook.id
+              ? initialTrackIndex
+              : 0,
+            isInitialLoad && event.data.id === initialBook.id
+              ? initialElapsedTime
+              : 0
           );
           setIsInitialLoad(false);
         });
@@ -123,8 +127,7 @@ function useAudioPlayer(book, initialTrackIndex, initialElapsedTime) {
 
   const exposedPlayer = {
     getProgressPercentage() {
-      const elapsed = AudioPlayer.getCurrentPosition();
-      return elapsed / AudioPlayer.getDuration();
+      return AudioPlayer.getProgressPercentage();
     },
     sendEvent(event, arg = currentBook) {
       send({ type: event, data: arg });

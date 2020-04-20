@@ -8,7 +8,7 @@ import ChevronDownIcon from "../../public/icons/chevron-down.svg";
 import Scrubber from "./scrubber";
 import { AudioPlayerContext } from "../../pages";
 
-const Player = () => {
+const Player = ({ initialProgressPercentage }) => {
   const [isFullPlayer, setIsFullPlayer] = useState(false);
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [currentBook, stateMachine, exposedPlayer] = useContext(
@@ -59,6 +59,7 @@ const Player = () => {
           </div>
           {isFullPlayer && (
             <Scrubber
+              initialPercentage={initialProgressPercentage}
               percentage={progressPercentage}
               onScrubStarted={() => {
                 exposedPlayer.sendEvent("SCRUB");

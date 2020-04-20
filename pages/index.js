@@ -11,7 +11,6 @@ const { featuredAudiobooks } = require("./cachedData");
 export const AudioPlayerContext = React.createContext();
 
 const Home = () => {
-  const [book, setBook] = useState(null);
   let progress = {};
   if (typeof localStorage !== "undefined") {
     progress = JSON.parse(localStorage.getItem("progress"));
@@ -27,11 +26,10 @@ const Home = () => {
     <Layout>
       {featuredAudiobooks.length && (
         <AudioPlayerContext.Provider value={audioplayer}>
-          <FeaturedAudiobooks
-            featuredAudiobooks={featuredAudiobooks}
-            onBookSelected={setBook}
+          <FeaturedAudiobooks featuredAudiobooks={featuredAudiobooks} />
+          <Player
+            initialProgressPercentage={progress.progressPercentage || 0}
           />
-          <Player book={book} />
         </AudioPlayerContext.Provider>
       )}
       {!featuredAudiobooks.length && <ErrorState />}

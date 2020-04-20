@@ -20,6 +20,7 @@ class AudioPlayer {
   }
   _saveProgress(book, trackIndex) {
     const elapsedTime = this.getCurrentPosition();
+    const progressPercentage = this.getProgressPercentage();
     if (book && typeof elapsedTime !== "object")
       localStorage.setItem(
         "progress",
@@ -27,6 +28,7 @@ class AudioPlayer {
           book,
           trackIndex,
           elapsedTime,
+          progressPercentage,
         })
       );
   }
@@ -87,6 +89,11 @@ class AudioPlayer {
 
   getDuration() {
     return howler.duration();
+  }
+
+  getProgressPercentage() {
+    const elapsed = this.getCurrentPosition();
+    return elapsed / this.getDuration();
   }
 }
 
