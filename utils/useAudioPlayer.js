@@ -72,20 +72,29 @@ const playerMachine = Machine({
   },
 });
 
-function useAudioPlayer() {
-  const [currentBook, setCurrentBook] = useState();
-
+function useAudioPlayer(book, initialTrackIndex, initialElapsedTime) {
+  const [currentBook, setCurrentBook] = useState(book);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [current, send] = useMachine(playerMachine, {
     services: {
       loadAudio: (ctx, event) => {
         return new Promise((resolve) => {
-          if (!event.data || (currentBook && event.data.id === currentBook.id))
+          if (
+            !isInitialLoad &&
+            (!event.data || (currentBook && event.data.id === currentBook.id))
+          )
             resolve();
           ctx.currentBook = event.data;
           setCurrentBook(event.data);
-          AudioPlayer.setBook(event.data, {
-            onLoad: resolve,
-          });
+          AudioPlayer.setBook(
+            event.data,
+            {
+              onLoad: resolve,
+            },
+            isInitialLoad ? initialTrackIndex : 0,
+            isInitialLoad ? initialElapsedTime : 0
+          );
+          setIsInitialLoad(false);
         });
       },
     },
@@ -117,14 +126,11 @@ function useAudioPlayer() {
       const elapsed = AudioPlayer.getCurrentPosition();
       return elapsed / AudioPlayer.getDuration();
     },
-    sendEvent(event, arg) {
+    sendEvent(event, arg = currentBook) {
       send({ type: event, data: arg });
     },
     setBook: (book, events, trackIndex, elapsedTime) => {
-      // console.log("book changing", book);
-      // setCurrentBook(book);
-      // send("CHANGE_BOOK");
-      // AudioPlayer.setBook(book, events, trackIndex, elapsedTime);
+      setCurrentBook(book);
     },
   };
 

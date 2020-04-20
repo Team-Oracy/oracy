@@ -12,11 +12,21 @@ export const AudioPlayerContext = React.createContext();
 
 const Home = () => {
   const [book, setBook] = useState(null);
+  let progress = {};
+  if (typeof localStorage !== "undefined") {
+    progress = JSON.parse(localStorage.getItem("progress"));
+  }
+
+  const audioplayer = useAudioPlayer(
+    progress.book || undefined,
+    progress.trackIndex || 0,
+    progress.elapsedTime || 0
+  );
 
   return (
     <Layout>
       {featuredAudiobooks.length && (
-        <AudioPlayerContext.Provider value={useAudioPlayer()}>
+        <AudioPlayerContext.Provider value={audioplayer}>
           <FeaturedAudiobooks
             featuredAudiobooks={featuredAudiobooks}
             onBookSelected={setBook}
