@@ -1,6 +1,11 @@
 import React, { useRef, useEffect } from "react";
 
-const Scrubber = ({ percentage, onScrubStarted, onScrubEnded }) => {
+const Scrubber = ({
+  initialPercentage = 0,
+  percentage,
+  onScrubStarted,
+  onScrubEnded,
+}) => {
   const playerScrubberRef = useRef();
   const playerScrubberThumbRef = useRef();
   const playerScrubberBarActiveRef = useRef();
@@ -21,7 +26,6 @@ const Scrubber = ({ percentage, onScrubStarted, onScrubEnded }) => {
   }
 
   function scrubbed(e) {
-    // setIsUserScrubbing(false);
     const htmlElem = document.getElementsByTagName("html")[0];
     htmlElem.removeEventListener("mousemove", scrubbing);
     htmlElem.removeEventListener("mouseup", scrubbed);
@@ -43,15 +47,22 @@ const Scrubber = ({ percentage, onScrubStarted, onScrubEnded }) => {
     return scrubPercentage;
   }
 
-  useEffect(() => {
+  function setProgress(percentage) {
     const playerScrubberWidth = playerScrubberRef.current.clientWidth;
     const xPos = percentage * playerScrubberWidth;
     requestAnimationFrame(() => {
       playerScrubberBarActiveRef.current.style.width = `${xPos}px`;
       playerScrubberThumbRef.current.style.transform = `translateX(${xPos}px)`;
     });
+  }
+
+  useEffect(() => {
+    setProgress(percentage);
   }, [percentage]);
 
+  useEffect(() => {
+    setProgress(initialPercentage);
+  }, []);
   return (
     <div
       className="playerScrubber"
