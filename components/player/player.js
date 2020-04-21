@@ -11,6 +11,9 @@ import { AudioPlayerContext } from "../../pages";
 const Player = ({ initialProgressPercentage }) => {
   const [isFullPlayer, setIsFullPlayer] = useState(false);
   const [progressPercentage, setProgressPercentage] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [track, setTrack] = useState();
+  const [duration, setDuration] = useState(0);
   const [currentBook, stateMachine, exposedPlayer] = useContext(
     AudioPlayerContext
   );
@@ -21,9 +24,17 @@ const Player = ({ initialProgressPercentage }) => {
     if (stateMachine.matches("playing")) {
       setProgress.current = setInterval(() => {
         if (stateMachine.matches("playing")) {
-          const percentage = exposedPlayer.getProgressPercentage();
+          const {
+            progressPercentage,
+            trackIndex,
+            elapsedTime,
+            duration,
+          } = exposedPlayer.getProgress();
 
-          setProgressPercentage(percentage);
+          setProgressPercentage(progressPercentage);
+          setTrack(`Track ${trackIndex + 1}`);
+          setElapsedTime(elapsedTime);
+          setDuration(duration);
         }
       }, 1000);
     } else clearInterval(setProgress.current);
@@ -48,6 +59,7 @@ const Player = ({ initialProgressPercentage }) => {
           alt=""
           src={currentBook.coverImageSrc}
         />
+
         <div className="playerInfoControls">
           <div className="playerInfo">
             <div className="playerTitle" id="playerTitle">
@@ -61,6 +73,9 @@ const Player = ({ initialProgressPercentage }) => {
             <Scrubber
               initialPercentage={initialProgressPercentage}
               percentage={progressPercentage}
+              track={track}
+              elapsedTime={elapsedTime}
+              duration={duration}
               onScrubStarted={() => {
                 exposedPlayer.sendEvent("SCRUB");
               }}

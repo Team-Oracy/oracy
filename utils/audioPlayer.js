@@ -2,6 +2,7 @@ import { Howl } from "howler";
 
 let howler;
 let audioTracks = [];
+let currentTrackIndex = 0;
 
 class AudioPlayer {
   play(elapsedTime) {
@@ -19,21 +20,21 @@ class AudioPlayer {
     howler.seek(elapsedTime);
   }
   _saveProgress(book, trackIndex) {
-    const elapsedTime = this.getCurrentPosition();
-    const progressPercentage = this.getProgressPercentage();
-    if (book && typeof elapsedTime !== "object")
+    const progress = this.getProgress();
+    if (book && typeof progress.elapsedTime !== "object")
       localStorage.setItem(
         "progress",
         JSON.stringify({
           book,
           trackIndex,
-          elapsedTime,
-          progressPercentage,
+          elapsedTime: progress.elapsedTime,
+          progressPercentage: progress.progressPercentage,
         })
       );
   }
 
   _createHowlerObject(book, events, trackIndex) {
+    currentTrackIndex = trackIndex;
     let progressInterval;
     if (howler) howler.unload();
     howler = new Howl({
@@ -92,9 +93,16 @@ class AudioPlayer {
     return howler.duration();
   }
 
-  getProgressPercentage() {
-    const elapsed = this.getCurrentPosition();
-    return elapsed / this.getDuration();
+  getProgress() {
+    const duration = this.getDuration();
+    const elapsedTime = this.getCurrentPosition();
+    const progressPercentage = elapsedTime / duration;
+    return {
+      trackIndex: currentTrackIndex,
+      elapsedTime,
+      progressPercentage,
+      duration,
+    };
   }
 }
 
