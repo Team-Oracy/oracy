@@ -36,7 +36,7 @@ const Player = ({ initialProgressPercentage }) => {
     stateMachine.matches("playing") ? "-playing" : ""
   } ${stateMachine.matches("loading") ? "-loading" : ""}`;
 
-  return currentBook ? (
+  return currentBook.id ? (
     <div className={playerClassnames} id="player">
       <div
         className="playerMain"
