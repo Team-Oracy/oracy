@@ -38,6 +38,7 @@ class AudioPlayer {
     if (howler) howler.unload();
     howler = new Howl({
       html5: true,
+      autoUnlock: true,
       src: audioTracks[trackIndex],
       onplay: () => {
         progressInterval = setInterval(
