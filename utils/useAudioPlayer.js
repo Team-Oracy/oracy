@@ -130,8 +130,8 @@ function useAudioPlayer(
   });
 
   const exposedPlayer = {
-    getProgressPercentage() {
-      return AudioPlayer.getProgressPercentage();
+    getProgress() {
+      return AudioPlayer.getProgress();
     },
     sendEvent(event, arg = currentBook) {
       send({ type: event, data: arg });
