@@ -1,6 +1,5 @@
 /* global require */
-import React, { useState } from "react";
-import "../styles/app.sass";
+import React from "react";
 import FeaturedAudiobooks from "../components/featuredAudiobooks";
 import ErrorState from "../components/errorState";
 import Layout from "../components/layout";
