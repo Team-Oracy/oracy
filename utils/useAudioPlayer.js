@@ -72,7 +72,11 @@ const playerMachine = Machine({
   },
 });
 
-function useAudioPlayer(initialBook, initialTrackIndex, initialElapsedTime) {
+function useAudioPlayer(
+  initialBook = {},
+  initialTrackIndex,
+  initialElapsedTime
+) {
   const [currentBook, setCurrentBook] = useState(initialBook);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [current, send] = useMachine(playerMachine, {
@@ -81,7 +85,7 @@ function useAudioPlayer(initialBook, initialTrackIndex, initialElapsedTime) {
         return new Promise((resolve) => {
           if (
             !isInitialLoad &&
-            (!event.data || event.data.id === (currentBook || {}).id)
+            (!event.data || (currentBook && event.data.id === currentBook.id))
           )
             resolve();
           ctx.currentBook = event.data;
@@ -132,7 +136,7 @@ function useAudioPlayer(initialBook, initialTrackIndex, initialElapsedTime) {
     sendEvent(event, arg = currentBook) {
       send({ type: event, data: arg });
     },
-    setBook: (book, events, trackIndex, elapsedTime) => {
+    setBook: (book) => {
       setCurrentBook(book);
     },
   };
