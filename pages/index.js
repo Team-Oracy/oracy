@@ -13,7 +13,7 @@ export const AudioPlayerContext = React.createContext();
 const Home = () => {
   let progress = {};
   if (typeof localStorage !== "undefined") {
-    progress = JSON.parse(localStorage.getItem("progress"));
+    progress = JSON.parse(localStorage.getItem("progress")) || {};
   }
 
   const audioplayer = useAudioPlayer(
