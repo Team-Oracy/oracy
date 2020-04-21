@@ -4,7 +4,7 @@ import PlayIcon from "../public/icons/play.svg";
 import PauseIcon from "../public/icons/pause.svg";
 import { AudioPlayerContext } from "../pages";
 
-const AudioBookListItem = ({ book, onBookSelected = () => {} }) => {
+const AudioBookListItem = ({ book }) => {
   const [currentBook, stateMachine, exposedPlayer] = useContext(
     AudioPlayerContext
   );
@@ -19,7 +19,6 @@ const AudioBookListItem = ({ book, onBookSelected = () => {} }) => {
       <button
         type="button"
         onClick={() => {
-          onBookSelected(book);
           exposedPlayer.sendEvent("PLAY_PAUSE", book);
         }}
         className="listItemImage unstyled"
