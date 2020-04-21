@@ -81,7 +81,7 @@ function useAudioPlayer(initialBook, initialTrackIndex, initialElapsedTime) {
         return new Promise((resolve) => {
           if (
             !isInitialLoad &&
-            (!event.data || (currentBook && event.data.id === currentBook.id))
+            (!event.data || event.data.id === (currentBook || {}).id)
           )
             resolve();
           ctx.currentBook = event.data;
