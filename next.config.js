@@ -1,8 +1,7 @@
 // next.config.js
-const withSass = require("@zeit/next-sass");
-const withPlugins = require("next-compose-plugins");
 
-const nextConfig = {
+// eslint-disable-next-line no-undef
+module.exports = {
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
@@ -29,5 +28,3 @@ const nextConfig = {
     return config;
   },
 };
-
-module.exports = withPlugins([withSass], nextConfig);
