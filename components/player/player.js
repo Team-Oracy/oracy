@@ -81,8 +81,10 @@ const Player = ({ initialProgressPercentage }) => {
               }}
               onScrubEnded={(percentage) => {
                 // Set audio seek to new position
-                exposedPlayer.sendEvent("STOP_SCRUBBING", percentage);
-                setProgressPercentage(percentage);
+                setTimeout(() => {
+                  exposedPlayer.sendEvent("STOP_SCRUBBING", percentage);
+                  setProgressPercentage(percentage);
+                }, 0);
               }}
             ></Scrubber>
           )}
