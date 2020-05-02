@@ -1,17 +1,26 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 const Scrubber = ({
-  initialPercentage = 0,
-  percentage,
   track,
   elapsedTime,
   duration,
   onScrubStarted,
   onScrubEnded,
 }) => {
+  const [percentage, setPercentage] = useState(elapsedTime / duration);
   const playerScrubberRef = useRef();
   const playerScrubberThumbRef = useRef();
   const playerScrubberBarActiveRef = useRef();
+  const previousElapsedTimeRef = useRef(0);
+  const previousDurationRef = useRef(0);
+
+  useEffect(() => {
+    if (elapsedTime > 0) previousElapsedTimeRef.current = elapsedTime;
+    if (duration > 0) previousDurationRef.current = duration;
+
+    setPercentage(previousElapsedTimeRef.current / previousDurationRef.current);
+  }, [elapsedTime, duration]);
+
   function playerScrub(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -82,7 +91,7 @@ const Scrubber = ({
   }, [percentage]);
 
   useEffect(() => {
-    setProgress(initialPercentage);
+    setProgress(percentage);
   }, []);
   return (
     <div
@@ -109,11 +118,14 @@ const Scrubber = ({
       </div>
       <div className="playerScrubberTrackInfo">
         <div className="playerScrubberTrackInfoProgress">
-          {fancyTimeFormat(elapsedTime)}
+          {fancyTimeFormat(elapsedTime || previousElapsedTimeRef.current)}
         </div>
         <div className="playerScrubberTrackInfoName">{track}</div>
         <div className="playerScrubberTrackInfoCountdown">
-          {`- ${fancyTimeFormat(duration - elapsedTime)}`}
+          {`- ${fancyTimeFormat(
+            duration - elapsedTime ||
+              previousDurationRef.current - previousElapsedTimeRef.current
+          )}`}
         </div>
       </div>
     </div>
