@@ -10,7 +10,6 @@ import { AudioPlayerContext } from "../../pages";
 
 const Player = ({ initialProgressPercentage }) => {
   const [isFullPlayer, setIsFullPlayer] = useState(false);
-  const [progressPercentage, setProgressPercentage] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [track, setTrack] = useState();
   const [duration, setDuration] = useState(0);
@@ -25,13 +24,11 @@ const Player = ({ initialProgressPercentage }) => {
       setProgress.current = setInterval(() => {
         if (stateMachine.matches("playing")) {
           const {
-            progressPercentage,
             trackIndex,
             elapsedTime,
             duration,
           } = exposedPlayer.getProgress();
 
-          setProgressPercentage(progressPercentage);
           setTrack(`Track ${trackIndex + 1}`);
           setElapsedTime(elapsedTime);
           setDuration(duration);
@@ -71,8 +68,8 @@ const Player = ({ initialProgressPercentage }) => {
           </div>
           {isFullPlayer && (
             <Scrubber
+              showDetailedInfo={!stateMachine.matches("loading")}
               initialPercentage={initialProgressPercentage}
-              percentage={progressPercentage}
               track={track}
               elapsedTime={elapsedTime}
               duration={duration}
@@ -83,7 +80,6 @@ const Player = ({ initialProgressPercentage }) => {
                 // Set audio seek to new position
                 setTimeout(() => {
                   exposedPlayer.sendEvent("STOP_SCRUBBING", percentage);
-                  setProgressPercentage(percentage);
                 }, 0);
               }}
             ></Scrubber>

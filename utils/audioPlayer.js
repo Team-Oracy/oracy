@@ -95,7 +95,8 @@ class AudioPlayer {
 
   getProgress() {
     const duration = this.getDuration();
-    const elapsedTime = this.getCurrentPosition();
+    let elapsedTime = this.getCurrentPosition();
+    if (isNaN(elapsedTime)) elapsedTime = 0;
     const progressPercentage = elapsedTime / duration;
     return {
       trackIndex: currentTrackIndex,
